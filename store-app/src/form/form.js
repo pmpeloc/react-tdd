@@ -1,6 +1,7 @@
 import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
 import NativeSelect from '@mui/material/NativeSelect';
+import Button from '@mui/material/Button';
 
 const Form = () => {
   return (
@@ -20,6 +21,7 @@ const Form = () => {
           <option value={'furniture'}>Furniture</option>
           <option value={'clothing'}>Clothing</option>
         </NativeSelect>
+        <Button>Submit</Button>
       </form>
     </>
   );
