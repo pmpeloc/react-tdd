@@ -29,6 +29,8 @@ describe('When the user submits the form without values', () => {
   it('Should display validation messages', () => {
     render(<Form />);
     expect(screen.queryByText(/the name is required/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/the size is required/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/the type is required/i)).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /submit/i }));
     expect(screen.queryByText(/the name is required/i)).toBeInTheDocument();
     expect(screen.queryByText(/the size is required/i)).toBeInTheDocument();
