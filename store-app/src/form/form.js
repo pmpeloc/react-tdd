@@ -10,9 +10,11 @@ const Form = () => {
     size: '',
     type: '',
   });
+  const [isSaving, setIsSaving] = useState(false);
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
+    setIsSaving(true);
     const { name, size, type } = e.target.elements;
     if (!name.value) {
       setFormErrors((prevState) => ({
@@ -32,6 +34,11 @@ const Form = () => {
         type: 'The type is required',
       }));
     }
+    await fetch('/products', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    });
+    setIsSaving(false);
   };
 
   const blurHandler = (e) => {
@@ -74,7 +81,9 @@ const Form = () => {
           <option value={'clothing'}>Clothing</option>
         </NativeSelect>
         {formErrors.type.length && <p>{formErrors.type}</p>}
-        <Button type='submit'>Submit</Button>
+        <Button type='submit' disabled={isSaving}>
+          Submit
+        </Button>
       </form>
     </>
   );
