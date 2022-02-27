@@ -3,6 +3,7 @@ import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
 import NativeSelect from '@mui/material/NativeSelect';
 import Button from '@mui/material/Button';
+import { saveProduct } from '../services/productService';
 
 const Form = () => {
   const [formErrors, setFormErrors] = useState({
@@ -30,10 +31,7 @@ const Form = () => {
     setIsSaving(true);
     const { name, size, type } = e.target.elements;
     validateForm({ name: name.value, size: size.value, type: type.value });
-    await fetch('/products', {
-      method: 'POST',
-      body: JSON.stringify({}),
-    });
+    await saveProduct();
     setIsSaving(false);
   };
 
