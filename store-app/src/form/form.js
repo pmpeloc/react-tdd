@@ -12,28 +12,24 @@ const Form = () => {
   });
   const [isSaving, setIsSaving] = useState(false);
 
+  const validateFields = ({ name, value }) => {
+    setFormErrors((prevState) => ({
+      ...prevState,
+      [name]: value.length ? '' : `The ${name} is required`,
+    }));
+  };
+
+  const validateForm = ({ name, size, type }) => {
+    validateFields({ name: 'name', value: name });
+    validateFields({ name: 'size', value: size });
+    validateFields({ name: 'type', value: type });
+  };
+
   const submitHandler = async (e) => {
     e.preventDefault();
     setIsSaving(true);
     const { name, size, type } = e.target.elements;
-    if (!name.value) {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        name: 'The name is required',
-      }));
-    }
-    if (!size.value) {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        size: 'The size is required',
-      }));
-    }
-    if (!type.value) {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        type: 'The type is required',
-      }));
-    }
+    validateForm({ name: name.value, size: size.value, type: type.value });
     await fetch('/products', {
       method: 'POST',
       body: JSON.stringify({}),
@@ -43,10 +39,7 @@ const Form = () => {
 
   const blurHandler = (e) => {
     const { name, value } = e.target;
-    setFormErrors({
-      ...formErrors,
-      [name]: value.length ? '' : `The ${name} is required`,
-    });
+    validateFields({ name, value });
   };
 
   return (
