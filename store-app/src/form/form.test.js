@@ -5,11 +5,15 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
 import Form from './form';
-import { CREATED_STATUS } from '../constants/httpStatus';
+import { CREATED_STATUS, ERROR_SERVER_STATUS } from '../constants/httpStatus';
 
 const server = setupServer(
   rest.post('/products', (req, res, ctx) => {
-    return res(ctx.status(CREATED_STATUS));
+    const { name, size, type } = req.body;
+    if (name && size && type) {
+      return res(ctx.status(CREATED_STATUS));
+    }
+    return res(ctx.status(ERROR_SERVER_STATUS));
   })
 );
 
@@ -89,6 +93,15 @@ describe('When the user submits the form', () => {
     await waitFor(() => expect(submitBtn).not.toBeDisabled());
   });
   it('In the success path, the form page must display the success message "Product stored" and clean the fields values', async () => {
+    fireEvent.change(screen.getByLabelText(/name/i), {
+      target: { name: 'name', value: 'my product' },
+    });
+    fireEvent.change(screen.getByLabelText(/size/i), {
+      target: { name: 'size', value: 10 },
+    });
+    fireEvent.change(screen.getByLabelText(/type/i), {
+      target: { name: 'type', value: 'electronic' },
+    });
     fireEvent.click(screen.getByRole('button', { name: /submit/i }));
     // eslint-disable-next-line testing-library/prefer-find-by
     await waitFor(() =>

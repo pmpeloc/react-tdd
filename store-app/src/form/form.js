@@ -28,12 +28,18 @@ const Form = () => {
     validateFields({ name: 'type', value: type });
   };
 
+  const getFormValues = ({ name, size, type }) => ({
+    name: name.value,
+    size: size.value,
+    type: type.value,
+  });
+
   const submitHandler = async (e) => {
     e.preventDefault();
     setIsSaving(true);
     const { name, size, type } = e.target.elements;
-    validateForm({ name: name.value, size: size.value, type: type.value });
-    const res = await saveProduct();
+    validateForm(getFormValues({ name, size, type }));
+    const res = await saveProduct(getFormValues({ name, size, type }));
     if (res.status === CREATED_STATUS) setIsSuccess(true);
     setIsSaving(false);
   };
@@ -64,7 +70,6 @@ const Form = () => {
         />
         <InputLabel htmlFor='type'>Type</InputLabel>
         <NativeSelect
-          value=''
           onBlur={blurHandler}
           inputProps={{
             name: 'type',
