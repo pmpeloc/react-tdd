@@ -1,6 +1,6 @@
 /* eslint-disable testing-library/no-render-in-setup */
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import GitHubSearchPage from './github-search-page';
 
 beforeEach(() => render(<GitHubSearchPage />));
@@ -23,5 +23,15 @@ describe('When the GitHubSearchPage is mounted', () => {
         /please provide a search option and click in the search button/i
       )
     ).toBeInTheDocument();
+  });
+});
+
+describe('When the developer does a search', () => {
+  it('The search button should be disabled until the search is done.', async () => {
+    const searchButton = screen.getByRole('button', { name: /search/i });
+    expect(searchButton).not.toBeDisabled();
+    fireEvent.click(searchButton);
+    expect(searchButton).toBeDisabled();
+    await waitFor(() => expect(searchButton).not.toBeDisabled());
   });
 });

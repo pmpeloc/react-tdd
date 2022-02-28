@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -6,6 +7,14 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 
 export const GitHubSearchPage = () => {
+  const [isSearching, setIsSearching] = useState(false);
+
+  const clickHandler = async () => {
+    setIsSearching(true);
+    await Promise.resolve();
+    setIsSearching(false);
+  };
+
   return (
     <Container>
       <Typography component='h1' variant='h3'>
@@ -16,7 +25,12 @@ export const GitHubSearchPage = () => {
           <TextField fullWidth label='Filter by' id='filterBy' />
         </Grid>
         <Grid item md={3} xs={12}>
-          <Button fullWidth color='primary' variant='contained'>
+          <Button
+            disabled={isSearching}
+            fullWidth
+            color='primary'
+            variant='contained'
+            onClick={clickHandler}>
             Search
           </Button>
         </Grid>
