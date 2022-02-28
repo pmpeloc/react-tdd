@@ -4,7 +4,11 @@ import TextField from '@mui/material/TextField';
 import NativeSelect from '@mui/material/NativeSelect';
 import Button from '@mui/material/Button';
 import { saveProduct } from '../services/productService';
-import { CREATED_STATUS, ERROR_SERVER_STATUS } from '../constants/httpStatus';
+import {
+  CREATED_STATUS,
+  ERROR_SERVER_STATUS,
+  INVALID_REQUEST_STATUS,
+} from '../constants/httpStatus';
 
 const Form = () => {
   const [formErrors, setFormErrors] = useState({
@@ -35,18 +39,32 @@ const Form = () => {
     type: type.value,
   });
 
+  const fetchErrorsHandler = async (error) => {
+    if (error.status === ERROR_SERVER_STATUS) {
+      setErrorMessage('Unexpected error, please try again');
+    }
+    if (error.status === INVALID_REQUEST_STATUS) {
+      const data = await error.json();
+      setErrorMessage(data.message);
+    }
+  };
+
   const submitHandler = async (e) => {
     e.preventDefault();
     setIsSaving(true);
     const { name, size, type } = e.target.elements;
     validateForm(getFormValues({ name, size, type }));
-    const res = await saveProduct(getFormValues({ name, size, type }));
-    if (res.status === CREATED_STATUS) {
-      e.target.reset();
-      setIsSuccess(true);
-    }
-    if (res.status === ERROR_SERVER_STATUS) {
-      setErrorMessage('Unexpected error, please try again');
+    try {
+      const res = await saveProduct(getFormValues({ name, size, type }));
+      if (!res.ok) {
+        throw res;
+      }
+      if (res.status === CREATED_STATUS) {
+        e.target.reset();
+        setIsSuccess(true);
+      }
+    } catch (error) {
+      fetchErrorsHandler(error);
     }
     setIsSaving(false);
   };
