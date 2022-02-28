@@ -158,3 +158,20 @@ describe('When the user submits the form and the server returns an invalid reque
     );
   });
 });
+
+describe('When the user submits the form and the server returns an connection error', () => {
+  it('In a server error, the form page must display the error message "Connection error, please try later"', async () => {
+    server.use(
+      rest.post('/products', (req, res) => {
+        return res.networkError('Connection error, please try later');
+      })
+    );
+    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+    // eslint-disable-next-line testing-library/prefer-find-by
+    await waitFor(() =>
+      expect(
+        screen.getByText(/connection error, please try later/i)
+      ).toBeInTheDocument()
+    );
+  });
+});
