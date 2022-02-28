@@ -17,4 +17,11 @@ describe('When the GitHubSearchPage is mounted', () => {
   it('Must be a Search Button.', () => {
     expect(screen.getByRole('button', { name: /search/i })).toBeInTheDocument();
   });
+  it('Must be a initial message "Please provide a search option and click in the search button"', () => {
+    expect(
+      screen.getByText(
+        /please provide a search option and click in the search button/i
+      )
+    ).toBeInTheDocument();
+  });
 });

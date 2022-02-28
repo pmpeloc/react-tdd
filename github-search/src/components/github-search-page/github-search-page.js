@@ -3,6 +3,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
 
 export const GitHubSearchPage = () => {
   return (
@@ -20,6 +21,15 @@ export const GitHubSearchPage = () => {
           </Button>
         </Grid>
       </Grid>
+      <Box
+        display='flex'
+        justifyContent='center'
+        alignItems='center'
+        height={400}>
+        <Typography>
+          Please provide a search option and click in the search button
+        </Typography>
+      </Box>
     </Container>
   );
 };
