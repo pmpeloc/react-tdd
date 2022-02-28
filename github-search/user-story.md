@@ -51,7 +51,7 @@ of inspiring me to be better professional.
 
 ---
 
-# US - Lista de repositorios de github
+# ES - Lista de repositorios de github
 
 Como desarrollador, quiero echar un vistazo rápido a los repositorios de github
 como una forma de inspirarme a ser mejor profesional contribuyendo a proyectos
