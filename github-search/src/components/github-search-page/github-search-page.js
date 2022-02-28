@@ -8,10 +8,12 @@ import Box from '@mui/material/Box';
 
 export const GitHubSearchPage = () => {
   const [isSearching, setIsSearching] = useState(false);
+  const [isSearchApplied, setIsSearchApplied] = useState(false);
 
   const clickHandler = async () => {
     setIsSearching(true);
     await Promise.resolve();
+    setIsSearchApplied(true);
     setIsSearching(false);
   };
 
@@ -35,15 +37,19 @@ export const GitHubSearchPage = () => {
           </Button>
         </Grid>
       </Grid>
-      <Box
-        display='flex'
-        justifyContent='center'
-        alignItems='center'
-        height={400}>
-        <Typography>
-          Please provide a search option and click in the search button
-        </Typography>
-      </Box>
+      {isSearchApplied ? (
+        <table />
+      ) : (
+        <Box
+          display='flex'
+          justifyContent='center'
+          alignItems='center'
+          height={400}>
+          <Typography>
+            Please provide a search option and click in the search button
+          </Typography>
+        </Box>
+      )}
     </Container>
   );
 };
