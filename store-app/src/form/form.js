@@ -4,7 +4,7 @@ import TextField from '@mui/material/TextField';
 import NativeSelect from '@mui/material/NativeSelect';
 import Button from '@mui/material/Button';
 import { saveProduct } from '../services/productService';
-import { CREATED_STATUS } from '../constants/httpStatus';
+import { CREATED_STATUS, ERROR_SERVER_STATUS } from '../constants/httpStatus';
 
 const Form = () => {
   const [formErrors, setFormErrors] = useState({
@@ -14,6 +14,7 @@ const Form = () => {
   });
   const [isSaving, setIsSaving] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const validateFields = ({ name, value }) => {
     setFormErrors((prevState) => ({
@@ -44,6 +45,9 @@ const Form = () => {
       e.target.reset();
       setIsSuccess(true);
     }
+    if (res.status === ERROR_SERVER_STATUS) {
+      setErrorMessage('Unexpected error, please try again');
+    }
     setIsSaving(false);
   };
 
@@ -56,6 +60,7 @@ const Form = () => {
     <>
       <h1>Create product</h1>
       {isSuccess && <p>Product Stored</p>}
+      <p>{errorMessage}</p>
       <form onSubmit={submitHandler}>
         <TextField
           label='name'

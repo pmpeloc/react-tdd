@@ -84,7 +84,7 @@ describe('If the user blurs a field that is empty.', () => {
   });
 });
 
-describe('When the user submits the form', () => {
+describe('When the user submits the form properly and the server returns created status', () => {
   it('Should the submit button be disabled until the request is done', async () => {
     const submitBtn = screen.getByRole('button', { name: /submit/i });
     expect(submitBtn).not.toBeDisabled();
@@ -113,5 +113,17 @@ describe('When the user submits the form', () => {
     expect(nameInput).toHaveValue('');
     expect(sizeInput).toHaveValue('');
     expect(typeSelect).toHaveValue('');
+  });
+});
+
+describe('When the user submits the form and the server returns an unexpected error', () => {
+  it('In a server error, the form page must display the error message "Unexpected error, please try again"', async () => {
+    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+    // eslint-disable-next-line testing-library/prefer-find-by
+    await waitFor(() =>
+      expect(
+        screen.getByText(/unexpected error, please try again/i)
+      ).toBeInTheDocument()
+    );
   });
 });
