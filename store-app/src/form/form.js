@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
+import Container from '@mui/material/Container';
 import NativeSelect from '@mui/material/NativeSelect';
 import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 import { saveProduct } from '../services/productService';
 import {
   CREATED_STATUS,
@@ -78,43 +82,62 @@ const Form = () => {
   };
 
   return (
-    <>
-      <h1>Create product</h1>
+    <Container maxWidth='xs'>
+      <CssBaseline />
+      <Typography component='h1' variant='h5' align='center'>
+        Create product
+      </Typography>
       {isSuccess && <p>Product Stored</p>}
       <p>{errorMessage}</p>
       <form onSubmit={submitHandler}>
-        <TextField
-          label='name'
-          id='name'
-          name='name'
-          helperText={formErrors.name}
-          onBlur={blurHandler}
-        />
-        <TextField
-          label='size'
-          id='size'
-          name='size'
-          helperText={formErrors.size}
-          onBlur={blurHandler}
-        />
-        <InputLabel htmlFor='type'>Type</InputLabel>
-        <NativeSelect
-          onBlur={blurHandler}
-          inputProps={{
-            name: 'type',
-            id: 'type',
-          }}>
-          <option aria-label='None' value='' />
-          <option value={'electronic'}>Electronic</option>
-          <option value={'furniture'}>Furniture</option>
-          <option value={'clothing'}>Clothing</option>
-        </NativeSelect>
-        {formErrors.type.length && <p>{formErrors.type}</p>}
-        <Button type='submit' disabled={isSaving}>
-          Submit
-        </Button>
+        <Grid container spacing={4}>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label='name'
+              id='name'
+              name='name'
+              helperText={formErrors.name}
+              onBlur={blurHandler}
+              error={!!formErrors.name.length}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label='size'
+              id='size'
+              name='size'
+              helperText={formErrors.size}
+              onBlur={blurHandler}
+              error={!!formErrors.size.length}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <InputLabel htmlFor='type'>Type</InputLabel>
+            <NativeSelect
+              fullWidth
+              onBlur={blurHandler}
+              error={!!formErrors.type.length}
+              inputProps={{
+                name: 'type',
+                id: 'type',
+              }}>
+              <option aria-label='None' value='' />
+              <option value={'electronic'}>Electronic</option>
+              <option value={'furniture'}>Furniture</option>
+              <option value={'clothing'}>Clothing</option>
+            </NativeSelect>
+            {!!formErrors.type && <p>{formErrors.type}</p>}
+          </Grid>
+          <Grid item xs={12}>
+            <Button fullWidth type='submit' disabled={isSaving}>
+              Submit
+            </Button>
+          </Grid>
+        </Grid>
       </form>
-    </>
+    </Container>
   );
 };
 
