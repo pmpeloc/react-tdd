@@ -17,6 +17,31 @@ export const GitHubSearchPage = () => {
     setIsSearching(false);
   };
 
+  const renderContent = () =>
+    isSearchApplied ? (
+      <table>
+        <thead>
+          <tr>
+            <th>Repository</th>
+            <th>Stars</th>
+            <th>Forks</th>
+            <th>Open issues</th>
+            <th>Updated at</th>
+          </tr>
+        </thead>
+      </table>
+    ) : (
+      <Box
+        display='flex'
+        justifyContent='center'
+        alignItems='center'
+        height={400}>
+        <Typography>
+          Please provide a search option and click in the search button
+        </Typography>
+      </Box>
+    );
+
   return (
     <Container>
       <Typography component='h1' variant='h3'>
@@ -37,19 +62,7 @@ export const GitHubSearchPage = () => {
           </Button>
         </Grid>
       </Grid>
-      {isSearchApplied ? (
-        <table />
-      ) : (
-        <Box
-          display='flex'
-          justifyContent='center'
-          alignItems='center'
-          height={400}>
-          <Typography>
-            Please provide a search option and click in the search button
-          </Typography>
-        </Box>
-      )}
+      {renderContent()}
     </Container>
   );
 };
