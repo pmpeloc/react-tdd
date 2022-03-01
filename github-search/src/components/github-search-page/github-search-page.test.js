@@ -104,19 +104,22 @@ describe('When the developer does a search', () => {
     const withInTable = within(table);
     const tableCells = withInTable.getAllByRole('cell');
     const [repository, stars, forks, openIssues, updatedAt] = tableCells;
-    // eslint-disable-next-line jest/valid-expect
-    expect(within(repository).getByRole('img', { name: /test/i }));
+    const avatarImg = within(repository).getByRole('img', {
+      name: fakeRepo.name,
+    });
+    expect(avatarImg).toBeInTheDocument();
     expect(tableCells).toHaveLength(5);
-    expect(repository).toHaveTextContent(/test/i);
-    expect(stars).toHaveTextContent(/10/i);
-    expect(forks).toHaveTextContent(/5/i);
-    expect(openIssues).toHaveTextContent(/2/i);
-    expect(updatedAt).toHaveTextContent(/2020-04-01/i);
+    expect(repository).toHaveTextContent(fakeRepo.name);
+    expect(stars).toHaveTextContent(fakeRepo.stargazers_count);
+    expect(forks).toHaveTextContent(fakeRepo.forks_count);
+    expect(openIssues).toHaveTextContent(fakeRepo.open_issues_count);
+    expect(updatedAt).toHaveTextContent(fakeRepo.updated_at);
     // eslint-disable-next-line testing-library/no-node-access
-    expect(withInTable.getByText(/test/i).closest('a')).toHaveAttribute(
+    expect(withInTable.getByText(fakeRepo.name).closest('a')).toHaveAttribute(
       'href',
-      'http://localhost:3000/test'
+      fakeRepo.html_url
     );
+    expect(avatarImg).toHaveAttribute('src', fakeRepo.owner.avatar_url);
   });
   it('Must display total results number of the search and the current number of results.', async () => {
     fireClickSearch();

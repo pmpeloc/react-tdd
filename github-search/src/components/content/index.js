@@ -19,7 +19,7 @@ const tableHeaders = [
   'Updated at',
 ];
 
-const Content = ({ isSearchApplied }) => {
+const Content = ({ isSearchApplied, reposList }) => {
   return isSearchApplied ? (
     <>
       <TableContainer>
@@ -31,18 +31,31 @@ const Content = ({ isSearchApplied }) => {
               ))}
             </TableRow>
           </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell>
-                <Avatar src='/logo192.png' alt='test' />
-                <Link href='http://localhost:3000/test'>Test</Link>
-              </TableCell>
-              <TableCell>10</TableCell>
-              <TableCell>5</TableCell>
-              <TableCell>2</TableCell>
-              <TableCell>2020-04-01</TableCell>
-            </TableRow>
-          </TableBody>
+          {reposList.map(
+            ({
+              id,
+              name,
+              owner: { avatar_url: avatarUrl },
+              html_url: htmlUrl,
+              stargazers_count: stargazersCount,
+              forks_count: forksCount,
+              open_issues_count: openIssuesCount,
+              updated_at: updatedAt,
+            }) => (
+              <TableBody key={id}>
+                <TableRow>
+                  <TableCell>
+                    <Avatar src={avatarUrl} alt={name} />
+                    <Link href={htmlUrl}>{name}</Link>
+                  </TableCell>
+                  <TableCell>{stargazersCount}</TableCell>
+                  <TableCell>{forksCount}</TableCell>
+                  <TableCell>{openIssuesCount}</TableCell>
+                  <TableCell>{updatedAt}</TableCell>
+                </TableRow>
+              </TableBody>
+            )
+          )}
         </Table>
       </TableContainer>
       <TablePagination
@@ -72,4 +85,5 @@ export default Content;
 
 Content.propTypes = {
   isSearchApplied: PropTypes.bool.isRequired,
+  reposList: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
