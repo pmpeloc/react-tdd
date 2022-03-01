@@ -65,10 +65,13 @@ describe('When the developer does a search', () => {
     expect(openIssues).toHaveTextContent(/open issues/i);
     expect(updatedAt).toHaveTextContent(/updated at/i);
   });
-  it('Each table result must contain: name, stars, updated at, forks', async () => {
+  it('Each table result must contain: owner avatar image, name, stars, updated at, forks', async () => {
     fireClickSearch();
     const table = await screen.findByRole('table');
-    const tableCells = within(table).getAllByRole('cell');
+    const withInTable = within(table);
+    const tableCells = withInTable.getAllByRole('cell');
+    // eslint-disable-next-line jest/valid-expect
+    expect(withInTable.getByRole('img', { name: /test/i }));
     expect(tableCells).toHaveLength(5);
     const [repository, stars, forks, openIssues, updatedAt] = tableCells;
     expect(repository).toHaveTextContent(/test/i);
