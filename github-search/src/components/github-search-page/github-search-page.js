@@ -7,6 +7,7 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 
 import Content from '../content';
+import { getRepos } from '../../services';
 
 export const GitHubSearchPage = () => {
   const [isSearching, setIsSearching] = useState(false);
@@ -15,9 +16,7 @@ export const GitHubSearchPage = () => {
 
   const clickHandler = async () => {
     setIsSearching(true);
-    const res = await fetch(
-      '/search/repositories?q=react+language:phyton&page=1&per_page=30'
-    );
+    const res = await getRepos();
     const data = await res.json();
     setReposList(data.items);
     setIsSearchApplied(true);
