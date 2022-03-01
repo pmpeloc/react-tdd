@@ -65,19 +65,24 @@ describe('When the developer does a search', () => {
     expect(openIssues).toHaveTextContent(/open issues/i);
     expect(updatedAt).toHaveTextContent(/updated at/i);
   });
-  it('Each table result must contain: owner avatar image, name, stars, updated at, forks', async () => {
+  it('Each table result must contain: owner avatar image, name, stars, updated at, forks, open issues. It should have a link that opens in a new tab', async () => {
     fireClickSearch();
     const table = await screen.findByRole('table');
     const withInTable = within(table);
     const tableCells = withInTable.getAllByRole('cell');
-    // eslint-disable-next-line jest/valid-expect
-    expect(withInTable.getByRole('img', { name: /test/i }));
-    expect(tableCells).toHaveLength(5);
     const [repository, stars, forks, openIssues, updatedAt] = tableCells;
+    // eslint-disable-next-line jest/valid-expect
+    expect(within(tableCells[0]).getByRole('img', { name: /test/i }));
+    expect(tableCells).toHaveLength(5);
     expect(repository).toHaveTextContent(/test/i);
     expect(stars).toHaveTextContent(/10/i);
     expect(forks).toHaveTextContent(/5/i);
     expect(openIssues).toHaveTextContent(/2/i);
     expect(updatedAt).toHaveTextContent(/2020-04-01/i);
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(withInTable.getByText(/test/i).closest('a')).toHaveAttribute(
+      'href',
+      'http://localhost:3000/test'
+    );
   });
 });
