@@ -32,7 +32,7 @@ describe('When the GitHubSearchPage is mounted', () => {
   });
 });
 
-describe.only('When the developer does a search', () => {
+describe('When the developer does a search', () => {
   const fireClickSearch = () =>
     fireEvent.click(screen.getByRole('button', { name: /search/i }));
   it('The search button should be disabled until the search is done.', async () => {
@@ -64,5 +64,17 @@ describe.only('When the developer does a search', () => {
     expect(forks).toHaveTextContent(/forks/i);
     expect(openIssues).toHaveTextContent(/open issues/i);
     expect(updatedAt).toHaveTextContent(/updated at/i);
+  });
+  it('Each table result must contain: name, stars, updated at, forks', async () => {
+    fireClickSearch();
+    const table = await screen.findByRole('table');
+    const tableCells = within(table).getAllByRole('cell');
+    expect(tableCells).toHaveLength(5);
+    const [repository, stars, forks, openIssues, updatedAt] = tableCells;
+    expect(repository).toHaveTextContent(/test/i);
+    expect(stars).toHaveTextContent(/10/i);
+    expect(forks).toHaveTextContent(/5/i);
+    expect(openIssues).toHaveTextContent(/2/i);
+    expect(updatedAt).toHaveTextContent(/2020-04-01/i);
   });
 });
