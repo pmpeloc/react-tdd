@@ -20,64 +20,74 @@ const tableHeaders = [
 ];
 
 const Content = ({ isSearchApplied, reposList }) => {
-  return isSearchApplied ? (
-    <>
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              {tableHeaders.map((name) => (
-                <TableCell key={name}>{name}</TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          {reposList.map(
-            ({
-              id,
-              name,
-              owner: { avatar_url: avatarUrl },
-              html_url: htmlUrl,
-              stargazers_count: stargazersCount,
-              forks_count: forksCount,
-              open_issues_count: openIssuesCount,
-              updated_at: updatedAt,
-            }) => (
-              <TableBody key={id}>
-                <TableRow>
-                  <TableCell>
-                    <Avatar src={avatarUrl} alt={name} />
-                    <Link href={htmlUrl}>{name}</Link>
-                  </TableCell>
-                  <TableCell>{stargazersCount}</TableCell>
-                  <TableCell>{forksCount}</TableCell>
-                  <TableCell>{openIssuesCount}</TableCell>
-                  <TableCell>{updatedAt}</TableCell>
-                </TableRow>
-              </TableBody>
-            )
-          )}
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[30, 50, 100]}
-        component='div'
-        count={1}
-        rowsPerPage={30}
-        page={0}
-        onChangePage={() => {}}
-        onChangeRowsPerPage={() => {}}
-      />
-    </>
-  ) : (
-    <Box
-      display='flex'
-      justifyContent='center'
-      alignItems='center'
-      height={400}>
-      <Typography>
-        Please provide a search option and click in the search button
-      </Typography>
-    </Box>
+  if (isSearchApplied && !!reposList.length) {
+    return (
+      <>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                {tableHeaders.map((name) => (
+                  <TableCell key={name}>{name}</TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            {reposList.map(
+              ({
+                id,
+                name,
+                owner: { avatar_url: avatarUrl },
+                html_url: htmlUrl,
+                stargazers_count: stargazersCount,
+                forks_count: forksCount,
+                open_issues_count: openIssuesCount,
+                updated_at: updatedAt,
+              }) => (
+                <TableBody key={id}>
+                  <TableRow>
+                    <TableCell>
+                      <Avatar src={avatarUrl} alt={name} />
+                      <Link href={htmlUrl}>{name}</Link>
+                    </TableCell>
+                    <TableCell>{stargazersCount}</TableCell>
+                    <TableCell>{forksCount}</TableCell>
+                    <TableCell>{openIssuesCount}</TableCell>
+                    <TableCell>{updatedAt}</TableCell>
+                  </TableRow>
+                </TableBody>
+              )
+            )}
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[30, 50, 100]}
+          component='div'
+          count={1}
+          rowsPerPage={30}
+          page={0}
+          onChangePage={() => {}}
+          onChangeRowsPerPage={() => {}}
+        />
+      </>
+    );
+  }
+
+  if (isSearchApplied && !reposList.length) {
+    return (
+      <Box
+        display='flex'
+        justifyContent='center'
+        alignItems='center'
+        height={400}>
+        <Typography>You search has no results</Typography>
+      </Box>
+    );
+  }
+
+  return (
+    <Typography>
+      Please provide a search option and click in the search button
+    </Typography>
   );
 };
 

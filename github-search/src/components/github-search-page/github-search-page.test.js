@@ -44,6 +44,9 @@ afterAll(() => server.close());
 
 beforeEach(() => render(<GitHubSearchPage />));
 
+const fireClickSearch = () =>
+  fireEvent.click(screen.getByRole('button', { name: /search/i }));
+
 describe('When the GitHubSearchPage is mounted', () => {
   it('Must display the title', () => {
     expect(
@@ -66,8 +69,6 @@ describe('When the GitHubSearchPage is mounted', () => {
 });
 
 describe('When the developer does a search', () => {
-  const fireClickSearch = () =>
-    fireEvent.click(screen.getByRole('button', { name: /search/i }));
   it('The search button should be disabled until the search is done.', async () => {
     const searchButton = screen.getByRole('button', { name: /search/i });
     expect(searchButton).not.toBeDisabled();
@@ -153,5 +154,24 @@ describe('When the developer does a search', () => {
 });
 
 describe('When the developer does a search without results', () => {
-  it.todo('Must show a empty state message');
+  it('Must show a empty state message: "You search has no results"', async () => {
+    server.use(
+      rest.get('/search/repositories', (req, res, ctx) => {
+        return res(
+          ctx.status(200),
+          ctx.json({
+            total_count: 0,
+            incomplete_results: false,
+            items: [],
+          })
+        );
+      })
+    );
+    fireClickSearch();
+    // eslint-disable-next-line testing-library/prefer-find-by
+    await waitFor(() =>
+      expect(screen.getByText(/you search has no results/i)).toBeInTheDocument()
+    );
+    expect(screen.queryByRole('table')).not.toBeInTheDocument();
+  });
 });
