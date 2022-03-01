@@ -13,15 +13,18 @@ export const GitHubSearchPage = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [isSearchApplied, setIsSearchApplied] = useState(false);
   const [reposList, setReposList] = useState([]);
+  const [searchBy, setSearchBy] = useState('');
 
   const clickHandler = async () => {
     setIsSearching(true);
-    const res = await getRepos();
+    const res = await getRepos({ q: searchBy });
     const data = await res.json();
     setReposList(data.items);
     setIsSearchApplied(true);
     setIsSearching(false);
   };
+
+  const changeHandler = ({ target: { value } }) => setSearchBy(value);
 
   return (
     <Container>
@@ -32,7 +35,13 @@ export const GitHubSearchPage = () => {
       </Box>
       <Grid container spacing={2} justifyContent='space-between'>
         <Grid item md={6} xs={12}>
-          <TextField fullWidth label='Filter by' id='filterBy' />
+          <TextField
+            value={searchBy}
+            onChange={changeHandler}
+            fullWidth
+            label='Filter by'
+            id='filterBy'
+          />
         </Grid>
         <Grid item md={3} xs={12}>
           <Button

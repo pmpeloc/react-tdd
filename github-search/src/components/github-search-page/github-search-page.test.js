@@ -11,7 +11,11 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
 import GitHubSearchPage from './github-search-page';
-import { makeFakeRepo, makeFakeResponse } from '../../__fixtures__/repos';
+import {
+  getReposListBy,
+  makeFakeRepo,
+  makeFakeResponse,
+} from '../../__fixtures__/repos';
 import { OK_STATUS } from '../../constants';
 
 const fakeResponse = makeFakeResponse({ totalCount: 1 });
@@ -143,7 +147,7 @@ describe('When the developer does a search without results', () => {
   it('Must show a empty state message: "You search has no results"', async () => {
     server.use(
       rest.get('/search/repositories', (req, res, ctx) => {
-        return res(ctx.status(OK_STATUS), ctx.json(makeFakeResponse({})));
+        return res(ctx.status(OK_STATUS), ctx.json(makeFakeResponse()));
       })
     );
     fireClickSearch();
@@ -152,5 +156,34 @@ describe('When the developer does a search without results', () => {
       expect(screen.getByText(/you search has no results/i)).toBeInTheDocument()
     );
     expect(screen.queryByRole('table')).not.toBeInTheDocument();
+  });
+});
+
+describe('When the developer types on filter by and does a search', () => {
+  it('Must display the related repos', async () => {
+    const internalFakeResponse = makeFakeResponse();
+    const REPO_NAME = 'laravel';
+    const expectedRepo = getReposListBy({ name: REPO_NAME })[0];
+    server.use(
+      rest.get('/search/repositories', (req, res, ctx) =>
+        res(
+          ctx.status(OK_STATUS),
+          ctx.json({
+            ...internalFakeResponse,
+            items: getReposListBy({ name: req.url.searchParams.get('q') }),
+          })
+        )
+      )
+    );
+    fireEvent.change(screen.getByLabelText(/filter by/i), {
+      target: { value: REPO_NAME },
+    });
+    fireClickSearch();
+    const table = await screen.findByRole('table');
+    expect(table).toBeInTheDocument();
+    const withInTable = within(table);
+    const tableCells = withInTable.getAllByRole('cell');
+    const [repository] = tableCells;
+    expect(repository).toHaveTextContent(expectedRepo.name);
   });
 });
