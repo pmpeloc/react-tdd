@@ -5,6 +5,14 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Avatar from '@mui/material/Avatar';
+import Link from '@mui/material/Link';
 
 export const GitHubSearchPage = () => {
   const [isSearching, setIsSearching] = useState(false);
@@ -19,29 +27,31 @@ export const GitHubSearchPage = () => {
 
   const renderContent = () =>
     isSearchApplied ? (
-      <table>
-        <thead>
-          <tr>
-            <th>Repository</th>
-            <th>Stars</th>
-            <th>Forks</th>
-            <th>Open issues</th>
-            <th>Updated at</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <img src='' alt='test' />
-              <a href='http://localhost:3000/test'>Test</a>
-            </td>
-            <td>10</td>
-            <td>5</td>
-            <td>2</td>
-            <td>2020-04-01</td>
-          </tr>
-        </tbody>
-      </table>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Repository</TableCell>
+              <TableCell>Stars</TableCell>
+              <TableCell>Forks</TableCell>
+              <TableCell>Open issues</TableCell>
+              <TableCell>Updated at</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              <TableCell>
+                <Avatar src='/logo192.png' alt='test' />
+                <Link href='http://localhost:3000/test'>Test</Link>
+              </TableCell>
+              <TableCell>10</TableCell>
+              <TableCell>5</TableCell>
+              <TableCell>2</TableCell>
+              <TableCell>2020-04-01</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
     ) : (
       <Box
         display='flex'

@@ -72,7 +72,7 @@ describe('When the developer does a search', () => {
     const tableCells = withInTable.getAllByRole('cell');
     const [repository, stars, forks, openIssues, updatedAt] = tableCells;
     // eslint-disable-next-line jest/valid-expect
-    expect(within(tableCells[0]).getByRole('img', { name: /test/i }));
+    expect(within(repository).getByRole('img', { name: /test/i }));
     expect(tableCells).toHaveLength(5);
     expect(repository).toHaveTextContent(/test/i);
     expect(stars).toHaveTextContent(/10/i);
