@@ -13,6 +13,7 @@ import { setupServer } from 'msw/node';
 import GitHubSearchPage from './github-search-page';
 import {
   getReposListBy,
+  getReposPerPage,
   makeFakeRepo,
   makeFakeResponse,
 } from '../../__fixtures__/repos';
@@ -185,5 +186,30 @@ describe('When the developer types on filter by and does a search', () => {
     const tableCells = withInTable.getAllByRole('cell');
     const [repository] = tableCells;
     expect(repository).toHaveTextContent(expectedRepo.name);
+  });
+});
+
+describe('When the developer does a search and selects 50 rows per page', () => {
+  it('Must fetch a new search and display 50 rows results on the table', async () => {
+    server.use(
+      rest.get('/search/repositories', (req, res, ctx) =>
+        res(
+          ctx.status(OK_STATUS),
+          ctx.json({
+            ...makeFakeResponse(),
+            items: getReposPerPage({
+              perPage: Number(req.url.searchParams.get('per_page')),
+              currentPage: req.url.searchParams.get('page'),
+            }),
+          })
+        )
+      )
+    );
+    fireClickSearch();
+    expect(await screen.findByRole('table')).toBeInTheDocument();
+    expect(await screen.findAllByRole('row')).toHaveLength(31);
+    fireEvent.mouseDown(screen.getByLabelText(/rows per page/i));
+    fireEvent.click(screen.getByRole('option', { name: '50' }));
+    expect(await screen.findAllByRole('row')).toHaveLength(51);
   });
 });
