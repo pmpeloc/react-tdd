@@ -85,4 +85,9 @@ describe('When the developer does a search', () => {
       'http://localhost:3000/test'
     );
   });
+  it('Must display total results number of the search and the current number of results.', async () => {
+    fireClickSearch();
+    await screen.findByRole('table');
+    expect(screen.getByText(/1–1 of 1/i)).toBeInTheDocument();
+  });
 });
