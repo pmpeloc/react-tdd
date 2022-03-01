@@ -5,14 +5,8 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Avatar from '@mui/material/Avatar';
-import Link from '@mui/material/Link';
+
+import Content from '../content';
 
 export const GitHubSearchPage = () => {
   const [isSearching, setIsSearching] = useState(false);
@@ -25,50 +19,13 @@ export const GitHubSearchPage = () => {
     setIsSearching(false);
   };
 
-  const renderContent = () =>
-    isSearchApplied ? (
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Repository</TableCell>
-              <TableCell>Stars</TableCell>
-              <TableCell>Forks</TableCell>
-              <TableCell>Open issues</TableCell>
-              <TableCell>Updated at</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell>
-                <Avatar src='/logo192.png' alt='test' />
-                <Link href='http://localhost:3000/test'>Test</Link>
-              </TableCell>
-              <TableCell>10</TableCell>
-              <TableCell>5</TableCell>
-              <TableCell>2</TableCell>
-              <TableCell>2020-04-01</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
-    ) : (
-      <Box
-        display='flex'
-        justifyContent='center'
-        alignItems='center'
-        height={400}>
-        <Typography>
-          Please provide a search option and click in the search button
-        </Typography>
-      </Box>
-    );
-
   return (
     <Container>
-      <Typography component='h1' variant='h3'>
-        GitHub repositories list
-      </Typography>
+      <Box my={4}>
+        <Typography component='h1' variant='h3'>
+          GitHub repositories list
+        </Typography>
+      </Box>
       <Grid container spacing={2} justifyContent='space-between'>
         <Grid item md={6} xs={12}>
           <TextField fullWidth label='Filter by' id='filterBy' />
@@ -84,7 +41,9 @@ export const GitHubSearchPage = () => {
           </Button>
         </Grid>
       </Grid>
-      {renderContent()}
+      <Box my={4}>
+        <Content isSearchApplied={isSearchApplied} />
+      </Box>
     </Container>
   );
 };
