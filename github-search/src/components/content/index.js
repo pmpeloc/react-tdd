@@ -25,8 +25,9 @@ const Content = ({
   rowsPerPage,
   setRowsPerPage,
 }) => {
-  const changeRowsPerPageHandler = ({ target: { value } }) =>
-    setRowsPerPage(value);
+  const changeRowsPerPageHandler = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+  };
 
   const renderWithBox = (cb) => (
     <Box
@@ -82,8 +83,8 @@ const Content = ({
           count={1}
           rowsPerPage={rowsPerPage}
           page={0}
-          onChangePage={() => {}}
-          onChangeRowsPerPage={changeRowsPerPageHandler}
+          onPageChange={() => {}}
+          onRowsPerPageChange={changeRowsPerPageHandler}
         />
       </>
     );
