@@ -11,30 +11,16 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
 import GitHubSearchPage from './github-search-page';
+import { makeFakeRepo, makeFakeResponse } from '../../__fixtures__/repos';
+import { OK_STATUS } from '../../constants';
 
-const fakeRepo = {
-  id: '10270250',
-  name: 'react',
-  owner: {
-    avatar_url: 'https://avatars.githubusercontent.com/u/69631?v=4',
-  },
-  html_url: 'https://github.com/facebook/react',
-  updated_at: '2022-03-01',
-  stargazers_count: 183116,
-  forks_count: 37407,
-  open_issues_count: 975,
-};
+const fakeResponse = makeFakeResponse({ totalCount: 1 });
+const fakeRepo = makeFakeRepo();
+fakeResponse.items = [fakeRepo];
 
 const server = setupServer(
   rest.get('/search/repositories', (req, res, ctx) => {
-    return res(
-      ctx.status(200),
-      ctx.json({
-        total_count: 2729858,
-        incomplete_results: false,
-        items: [fakeRepo],
-      })
-    );
+    return res(ctx.status(OK_STATUS), ctx.json(fakeResponse));
   })
 );
 
@@ -157,14 +143,7 @@ describe('When the developer does a search without results', () => {
   it('Must show a empty state message: "You search has no results"', async () => {
     server.use(
       rest.get('/search/repositories', (req, res, ctx) => {
-        return res(
-          ctx.status(200),
-          ctx.json({
-            total_count: 0,
-            incomplete_results: false,
-            items: [],
-          })
-        );
+        return res(ctx.status(OK_STATUS), ctx.json(makeFakeResponse({})));
       })
     );
     fireClickSearch();
