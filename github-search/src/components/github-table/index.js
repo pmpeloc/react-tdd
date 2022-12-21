@@ -18,8 +18,8 @@ const tableHeaders = [
 ];
 
 const GitHubTable = ({ reposList }) => (
-  <TableContainer>
-    <Table>
+  <TableContainer sx={{ maxHeight: 440 }}>
+    <Table stickyHeader>
       <TableHead>
         <TableRow>
           {tableHeaders.map((name) => (
