@@ -63,6 +63,11 @@ describe('When the developer does a search', () => {
   it('The search button should be disabled until the search is done.', async () => {
     const searchButton = screen.getByRole('button', { name: /search/i });
     expect(searchButton).not.toBeDisabled();
+    // Change input
+    fireEvent.change(screen.getByLabelText(/filter by/i), {
+      target: { value: 'test' },
+    });
+    expect(searchButton).not.toBeDisabled();
     fireClickSearch();
     expect(searchButton).toBeDisabled();
     await waitFor(() => expect(searchButton).not.toBeDisabled());
