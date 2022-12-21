@@ -1,20 +1,24 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import TablePagination from '@mui/material/TablePagination';
 
 import Content from '../content';
+import GitHubTable from '../github-table';
 import { getRepos } from '../../services';
+
+const ROWS_PER_PAGE_DEFAULT = 30;
 
 export const GitHubSearchPage = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [isSearchApplied, setIsSearchApplied] = useState(false);
   const [reposList, setReposList] = useState([]);
   const [searchBy, setSearchBy] = useState('');
-  const [rowsPerPage, setRowsPerPage] = useState(30);
+  const [rowsPerPage, setRowsPerPage] = useState(ROWS_PER_PAGE_DEFAULT);
 
   const didMount = useRef(false);
 
@@ -28,6 +32,10 @@ export const GitHubSearchPage = () => {
   }, [rowsPerPage, searchBy]);
 
   const changeHandler = ({ target: { value } }) => setSearchBy(value);
+
+  const changeRowsPerPageHandler = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+  };
 
   useEffect(() => {
     if (!didMount.current) {
@@ -66,12 +74,20 @@ export const GitHubSearchPage = () => {
         </Grid>
       </Grid>
       <Box my={4}>
-        <Content
-          isSearchApplied={isSearchApplied}
-          reposList={reposList}
-          rowsPerPage={rowsPerPage}
-          setRowsPerPage={setRowsPerPage}
-        />
+        <Content isSearchApplied={isSearchApplied} reposList={reposList}>
+          <>
+            <GitHubTable reposList={reposList} />
+            <TablePagination
+              rowsPerPageOptions={[30, 50, 100]}
+              component='div'
+              count={1}
+              rowsPerPage={rowsPerPage}
+              page={0}
+              onPageChange={() => {}}
+              onRowsPerPageChange={changeRowsPerPageHandler}
+            />
+          </>
+        </Content>
       </Box>
     </Container>
   );

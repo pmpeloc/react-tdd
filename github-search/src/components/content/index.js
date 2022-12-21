@@ -1,34 +1,9 @@
-import Box from '@mui/material/Box';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TablePagination from '@mui/material/TablePagination';
-import Avatar from '@mui/material/Avatar';
-import Link from '@mui/material/Link';
-import Typography from '@mui/material/Typography';
+import React from 'react';
 import PropTypes from 'prop-types';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
-const tableHeaders = [
-  'Repository',
-  'Stars',
-  'Forks',
-  'Open issues',
-  'Updated at',
-];
-
-const Content = ({
-  isSearchApplied,
-  reposList,
-  rowsPerPage,
-  setRowsPerPage,
-}) => {
-  const changeRowsPerPageHandler = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-  };
-
+const Content = ({ isSearchApplied, reposList, children }) => {
   const renderWithBox = (cb) => (
     <Box
       display='flex'
@@ -38,56 +13,9 @@ const Content = ({
       {cb()}
     </Box>
   );
+
   if (isSearchApplied && !!reposList.length) {
-    return (
-      <>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                {tableHeaders.map((name) => (
-                  <TableCell key={name}>{name}</TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            {reposList.map(
-              ({
-                id,
-                name,
-                owner: { avatar_url: avatarUrl },
-                html_url: htmlUrl,
-                stargazers_count: stargazersCount,
-                forks_count: forksCount,
-                open_issues_count: openIssuesCount,
-                updated_at: updatedAt,
-              }) => (
-                <TableBody key={id}>
-                  <TableRow>
-                    <TableCell>
-                      <Avatar src={avatarUrl} alt={name} />
-                      <Link href={htmlUrl}>{name}</Link>
-                    </TableCell>
-                    <TableCell>{stargazersCount}</TableCell>
-                    <TableCell>{forksCount}</TableCell>
-                    <TableCell>{openIssuesCount}</TableCell>
-                    <TableCell>{updatedAt}</TableCell>
-                  </TableRow>
-                </TableBody>
-              )
-            )}
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[30, 50, 100]}
-          component='div'
-          count={1}
-          rowsPerPage={rowsPerPage}
-          page={0}
-          onPageChange={() => {}}
-          onRowsPerPageChange={changeRowsPerPageHandler}
-        />
-      </>
-    );
+    return children;
   }
 
   if (isSearchApplied && !reposList.length) {
@@ -107,7 +35,6 @@ export default Content;
 
 Content.propTypes = {
   isSearchApplied: PropTypes.bool.isRequired,
-  reposList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  rowsPerPage: PropTypes.number.isRequired,
-  setRowsPerPage: PropTypes.func.isRequired,
+  reposList: PropTypes.arrayOf(PropTypes.object),
+  children: PropTypes.node.isRequired,
 };
