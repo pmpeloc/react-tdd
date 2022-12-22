@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Button, Grid, Typography } from '@mui/material';
 
-class ErrorBoundary extends React.Component {
+export class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
     this.state = { hasError: false };
@@ -19,12 +20,24 @@ class ErrorBoundary extends React.Component {
 
     if (hasError)
       return (
-        <>
-          <p>There is an unexpected error</p>
-          <button type='button' onClick={this.handleReloadClick}>
+        <Grid
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100vh',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 5,
+          }}>
+          <Typography variant='h4'>There is an unexpected error</Typography>
+          <Button
+            type='button'
+            onClick={this.handleReloadClick}
+            variant='contained'
+            color='primary'>
             Reload
-          </button>
-        </>
+          </Button>
+        </Grid>
       );
 
     return children;
