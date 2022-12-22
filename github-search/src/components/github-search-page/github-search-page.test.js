@@ -209,8 +209,8 @@ describe('When the developer does a search and selects 50 rows per page', () => 
         ).not.toBeDisabled()
       );
       expect(screen.getAllByRole('row')).toHaveLength(51);
-    }, 3000);
-  }, 6000);
+    }, 10000);
+  }, 30000);
 });
 
 describe('When the developer clicks on search and then on next page button', () => {
@@ -240,5 +240,39 @@ describe('When the developer clicks on search and then on next page button', () 
     );
     // Expect first repo name is from page 1
     expect(screen.getByRole('cell', { name: /2-0/ })).toBeInTheDocument();
-  }, 10000);
+  }, 30000);
+});
+
+describe('When the developer clicks on search and then on next page button and then on previous page button', () => {
+  it('Must display the previous repositories page', async () => {
+    server.use(rest.get('/search/repositories', paginatedHandler));
+    fireClickSearch();
+    expect(await screen.findByRole('table')).toBeInTheDocument();
+    expect(screen.getByRole('cell', { name: /1-0/ })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /next page/i })
+    ).not.toBeDisabled();
+    fireEvent.click(screen.getByRole('button', { name: /next page/i }));
+    expect(screen.getByRole('button', { name: /search/i })).toBeDisabled();
+    await waitFor(
+      () =>
+        expect(
+          screen.getByRole('button', { name: /search/i })
+        ).not.toBeDisabled(),
+      { timeout: 3000 }
+    );
+    expect(screen.getByRole('cell', { name: /2-0/ })).toBeInTheDocument();
+    // Click previous page
+    fireEvent.click(screen.getByRole('button', { name: /previous page/i }));
+    // Wait search finish
+    await waitFor(
+      () =>
+        expect(
+          screen.getByRole('button', { name: /search/i })
+        ).not.toBeDisabled(),
+      { timeout: 3000 }
+    );
+    // Expect
+    expect(screen.getByRole('cell', { name: /1-0/ })).toBeInTheDocument();
+  }, 30000);
 });
