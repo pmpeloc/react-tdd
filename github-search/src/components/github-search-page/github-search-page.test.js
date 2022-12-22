@@ -212,3 +212,33 @@ describe('When the developer does a search and selects 50 rows per page', () => 
     }, 3000);
   }, 6000);
 });
+
+describe('When the developer clicks on search and then on next page button', () => {
+  it('must display the next repositories page', async () => {
+    // Config server handler
+    server.use(rest.get('/search/repositories', paginatedHandler));
+    // Click search
+    fireClickSearch();
+    // Wait table
+    expect(await screen.findByRole('table')).toBeInTheDocument();
+    // Expect fist repo name is form page 0
+    expect(screen.getByRole('cell', { name: /1-0/ })).toBeInTheDocument();
+    // Expect next page is not disabled
+    expect(
+      screen.getByRole('button', { name: /next page/i })
+    ).not.toBeDisabled();
+    // Click next page button
+    fireEvent.click(screen.getByRole('button', { name: /next page/i }));
+    // Wait search button is not disabled
+    expect(screen.getByRole('button', { name: /search/i })).toBeDisabled();
+    await waitFor(
+      () =>
+        expect(
+          screen.getByRole('button', { name: /search/i })
+        ).not.toBeDisabled(),
+      { timeout: 3000 }
+    );
+    // Expect first repo name is from page 1
+    expect(screen.getByRole('cell', { name: /2-0/ })).toBeInTheDocument();
+  }, 10000);
+});
