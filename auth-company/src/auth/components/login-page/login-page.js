@@ -1,13 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, TextField } from '@mui/material';
 
 export function LoginPage() {
+  const [emailValidationMessage, setEmailValidationMessage] = useState('');
+  const [passwordValidationMessage, setPasswordValidationMessage] =
+    useState('');
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    setEmailValidationMessage('The email is required');
+    setPasswordValidationMessage('The password is required');
+  };
+
   return (
     <>
       <h1>Login Page</h1>
-      <TextField label="email" id="email" />
-      <TextField label="password" id="password" type="password" />
-      <Button>Send</Button>
+      <form onSubmit={handleSubmit}>
+        <TextField
+          label="email"
+          id="email"
+          helperText={emailValidationMessage}
+        />
+        <TextField
+          label="password"
+          id="password"
+          type="password"
+          helperText={passwordValidationMessage}
+        />
+        <Button type="submit">Send</Button>
+      </form>
     </>
   );
 }

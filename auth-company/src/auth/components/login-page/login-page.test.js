@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, render } from '@testing-library/react';
+import { screen, render, fireEvent } from '@testing-library/react';
 
 import { LoginPage } from './login-page';
 
@@ -14,5 +14,19 @@ describe('When login page is mounted', () => {
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /send/i }));
+  });
+});
+
+describe('When the user leaves empty fields and clicks the submit button', () => {
+  it('Display required messages as the format: The [field name] is required', () => {
+    expect(
+      screen.queryByText(/The email is required/i),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/The password is required/i),
+    ).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /send/i }));
+    expect(screen.getByText(/The email is required/i)).toBeInTheDocument();
+    expect(screen.getByText(/The password is required/i)).toBeInTheDocument();
   });
 });
