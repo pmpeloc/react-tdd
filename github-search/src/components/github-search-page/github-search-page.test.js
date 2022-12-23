@@ -17,7 +17,11 @@ import {
   makeFakeRepo,
   makeFakeResponse,
 } from '../../__fixtures__/repos';
-import { OK_STATUS } from '../../constants';
+import {
+  OK_STATUS,
+  UNEXPECTED_STATUS,
+  UNPROCESSABLE_STATUS,
+} from '../../constants';
 import { paginatedHandler } from '../../__fixtures__/handlers';
 
 const fakeResponse = makeFakeResponse({ totalCount: 1 });
@@ -278,13 +282,13 @@ describe('When the developer clicks on search and then on next page button and t
   }, 30000);
 });
 
-describe('When there is an unexpected error 422 from the backend', () => {
+describe('When there is an unprocessable error 422 from the backend', () => {
   it('Must display an alert message error with the message from the service', async () => {
     expect(screen.queryByText(/validation failed/i)).not.toBeInTheDocument();
     // Config sever return error
     server.use(
       rest.get('/search/repositories', (req, res, ctx) =>
-        res(ctx.status(422), ctx.json(makeFakeError()))
+        res(ctx.status(UNPROCESSABLE_STATUS), ctx.json(makeFakeError()))
       )
     );
     // Click search
@@ -300,7 +304,7 @@ describe('When there is an unexpected error 500 from the backend', () => {
     server.use(
       rest.get('/search/repositories', (req, res, ctx) =>
         res(
-          ctx.status(500),
+          ctx.status(UNEXPECTED_STATUS),
           ctx.json(makeFakeError({ message: 'Unexpected Error' }))
         )
       )
