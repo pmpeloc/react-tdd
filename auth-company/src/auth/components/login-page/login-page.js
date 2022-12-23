@@ -6,6 +6,14 @@ const validateEmail = email => {
   return regex.test(email);
 };
 
+const validatePassword = password => {
+  const regex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/;
+  return regex.test(password);
+};
+
+const passValidationMessage =
+  'The password must contain at least 8 characters, one upper case letter, one number and one special character';
+
 export function LoginPage() {
   const [emailValidationMessage, setEmailValidationMessage] = useState('');
   const [passwordValidationMessage, setPasswordValidationMessage] =
@@ -40,6 +48,14 @@ export function LoginPage() {
     setEmailValidationMessage('');
   };
 
+  const handleBlurPassword = () => {
+    if (!validatePassword(formValues.password)) {
+      setPasswordValidationMessage(passValidationMessage);
+      return;
+    }
+    setPasswordValidationMessage('');
+  };
+
   return (
     <>
       <h1>Login Page</h1>
@@ -61,6 +77,7 @@ export function LoginPage() {
           helperText={passwordValidationMessage}
           onChange={handleChange}
           value={formValues.password}
+          onBlur={handleBlurPassword}
         />
         <Button type="submit">Send</Button>
       </form>

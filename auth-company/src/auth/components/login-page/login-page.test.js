@@ -3,6 +3,10 @@ import { screen, render, fireEvent } from '@testing-library/react';
 
 import { LoginPage } from './login-page';
 
+const getPasswordInput = () => screen.getByLabelText(/password/i);
+const passwordValidationMessage =
+  'The password must contain at least 8 characters, one upper case letter, one number and one special character';
+
 beforeEach(() => render(<LoginPage />));
 
 describe('When login page is mounted', () => {
@@ -92,5 +96,49 @@ describe('When the user fills and blur the email input with invalid email, and t
     expect(
       screen.queryByText(/the email is invalid. example: john.doe@mail.com/i),
     ).not.toBeInTheDocument();
+  });
+});
+
+describe('When the user fills and blur the password input with a value with 7 character length', () => {
+  it('Must display the validation message "The password must contain at least 8 characters, one upper case letter, one number and one special character"', () => {
+    const passwordSevenLength = 'asdfghj';
+    fireEvent.change(getPasswordInput(), {
+      target: { value: passwordSevenLength },
+    });
+    fireEvent.blur(getPasswordInput());
+    expect(screen.getByText(passwordValidationMessage)).toBeInTheDocument();
+  });
+});
+
+describe('When the user fills and blur the password input with a value without one upper case character', () => {
+  it(`Must display the validation message ${passwordValidationMessage}`, () => {
+    const passwordWithoutUpperCaseChar = 'asdfghj8';
+    fireEvent.change(getPasswordInput(), {
+      target: { value: passwordWithoutUpperCaseChar },
+    });
+    fireEvent.blur(getPasswordInput());
+    expect(screen.getByText(passwordValidationMessage)).toBeInTheDocument();
+  });
+});
+
+describe('When the user fills and blur the password input with a value without one number', () => {
+  it(`Must display the validation message ${passwordValidationMessage}`, () => {
+    const passwordWithoutNumber = 'asdfghjK';
+    fireEvent.change(getPasswordInput(), {
+      target: { value: passwordWithoutNumber },
+    });
+    fireEvent.blur(getPasswordInput());
+    expect(screen.getByText(passwordValidationMessage)).toBeInTheDocument();
+  });
+});
+
+describe('When the user fills and blur the password input with a value without one special character', () => {
+  it(`Must display the validation message ${passwordValidationMessage}`, () => {
+    const passwordWithoutSpecialChar = 'asdfghj9';
+    fireEvent.change(getPasswordInput(), {
+      target: { value: passwordWithoutSpecialChar },
+    });
+    fireEvent.blur(getPasswordInput());
+    expect(screen.getByText(passwordValidationMessage)).toBeInTheDocument();
   });
 });
