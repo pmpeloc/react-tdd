@@ -110,3 +110,37 @@ describe('When the developer clicks on search and then on next page button and t
     expect(screen.getByRole('cell', { name: /1-0/ })).toBeInTheDocument();
   }, 30000);
 });
+
+describe('When the developer does a search and clicks on next page button and selects 50 rows per page', () => {
+  it('Must display the results of the first page', async () => {
+    server.use(rest.get('/search/repositories', paginatedHandler));
+    fireClickSearch();
+    expect(await screen.findByRole('table')).toBeInTheDocument();
+    expect(screen.getByRole('cell', { name: /1-0/ })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /next page/i })
+    ).not.toBeDisabled();
+    fireEvent.click(screen.getByRole('button', { name: /next page/i }));
+    expect(screen.getByRole('button', { name: /search/i })).toBeDisabled();
+    setTimeout(async () => {
+      await waitFor(() =>
+        expect(
+          screen.getByRole('button', { name: /search/i })
+        ).not.toBeDisabled()
+      );
+      expect(screen.getByRole('cell', { name: /2-0/ })).toBeInTheDocument();
+    }, 30000);
+    fireEvent.mouseDown(screen.getByLabelText(/rows per page/i));
+    fireEvent.click(screen.getByRole('option', { name: '50' }));
+    setTimeout(async () => {
+      await waitFor(() =>
+        expect(
+          screen.getByRole('button', { name: /search/i })
+        ).not.toBeDisabled()
+      );
+      expect(screen.getAllByRole('row')).toHaveLength(51);
+    }, 50000);
+    // Expect first page
+    expect(screen.getByRole('cell', { name: /1-0/ })).toBeInTheDocument();
+  }, 100000);
+});
