@@ -1,11 +1,12 @@
 import React from 'react';
-import { screen, render, fireEvent } from '@testing-library/react';
+import { screen, render, fireEvent, waitFor } from '@testing-library/react';
 import { setupServer } from 'msw/node';
 
 import { LoginPage } from './login-page';
 import { handlers } from '../../../mocks/handlers';
 
 const getPasswordInput = () => screen.getByLabelText(/password/i);
+const getSendButton = () => screen.getByRole('button', { name: /send/i });
 const passwordValidationMessage =
   'The password must contain at least 8 characters, one upper case letter, one number and one special character';
 
@@ -24,7 +25,7 @@ describe('When login page is mounted', () => {
   it('Must have a form with the following fields: email, password and submit button', () => {
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /send/i }));
+    expect(getSendButton());
   });
 });
 
@@ -36,7 +37,7 @@ describe('When the user leaves empty fields and clicks the submit button', () =>
     expect(
       screen.queryByText(/The password is required/i),
     ).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: /send/i }));
+    fireEvent.click(getSendButton());
     expect(screen.getByText(/The email is required/i)).toBeInTheDocument();
     expect(screen.getByText(/The password is required/i)).toBeInTheDocument();
   });
@@ -46,7 +47,7 @@ describe('When the user fills the fields and clicks the submit button', () => {
   it('must not display the required messages', () => {
     screen.getByLabelText(/email/i).value = 'john.doe@test.com';
     screen.getByLabelText(/password/i).value = 'Aa123456789!@#';
-    fireEvent.click(screen.getByRole('button', { name: /send/i }));
+    fireEvent.click(getSendButton());
     expect(
       screen.queryByText(/The email is required/i),
     ).not.toBeInTheDocument();
@@ -170,9 +171,11 @@ describe('When the user fills and blur the password input with a invalid value a
 });
 
 describe('When the user submit the login form with valid data', () => {
-  it.todo(
-    'Must disable the submit button while the form page is fetching the data',
-  );
+  it('Must disable the submit button while the form page is fetching the data', async () => {
+    fireEvent.click(getSendButton());
+    expect(getSendButton()).toBeDisabled();
+    await waitFor(() => expect(getSendButton()).not.toBeDisabled());
+  });
 
   it.todo(
     'Must be a loading indicator at the top of the form while it is fetching',

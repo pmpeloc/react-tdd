@@ -16,6 +16,7 @@ const passValidationMessage =
 
 export function LoginPage() {
   const [emailValidationMessage, setEmailValidationMessage] = useState('');
+  const [isFetching, setIsFetching] = useState(false);
   const [passwordValidationMessage, setPasswordValidationMessage] =
     useState('');
   const [formValues, setFormValues] = useState({
@@ -23,7 +24,7 @@ export function LoginPage() {
     password: '',
   });
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
     const { email, password } = e.target.elements;
     if (!email.value) {
@@ -32,6 +33,9 @@ export function LoginPage() {
     if (!password.value) {
       setPasswordValidationMessage('The password is required');
     }
+    setIsFetching(true);
+    await fetch('/login', { method: 'POST' });
+    setIsFetching(false);
   };
 
   const handleChange = ({ target: { value, name } }) => {
@@ -79,7 +83,9 @@ export function LoginPage() {
           value={formValues.password}
           onBlur={handleBlurPassword}
         />
-        <Button type="submit">Send</Button>
+        <Button type="submit" disabled={isFetching}>
+          Send
+        </Button>
       </form>
     </>
   );
