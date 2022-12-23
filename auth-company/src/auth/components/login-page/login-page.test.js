@@ -59,3 +59,38 @@ describe('When the user fills and blur the email input with invalid email', () =
     ).toBeInTheDocument();
   });
 });
+
+describe('When the user fills and blur the email input with invalid email', () => {
+  it('Must display a validation message "The email is invalid. Example: john.doe@mail.com"', () => {
+    const emailInput = screen.getByLabelText(/email/i);
+    // Change an blur email input
+    fireEvent.change(emailInput, {
+      target: { value: 'invalid.email' },
+    });
+    fireEvent.blur(emailInput);
+    // Expect
+    expect(
+      screen.getByText(/the email is invalid. example: john.doe@mail.com/i),
+    ).toBeInTheDocument();
+  });
+});
+
+describe('When the user fills and blur the email input with invalid email, and then focus and change with valid value', () => {
+  it('Must not display a validation message', () => {
+    const emailInput = screen.getByLabelText(/email/i);
+    fireEvent.change(emailInput, {
+      target: { value: 'invalid.email' },
+    });
+    fireEvent.blur(emailInput);
+    expect(
+      screen.getByText(/the email is invalid. example: john.doe@mail.com/i),
+    ).toBeInTheDocument();
+    fireEvent.change(emailInput, {
+      target: { value: 'john.doe@mail.com' },
+    });
+    fireEvent.blur(emailInput);
+    expect(
+      screen.queryByText(/the email is invalid. example: john.doe@mail.com/i),
+    ).not.toBeInTheDocument();
+  });
+});
