@@ -6,6 +6,7 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import TablePagination from '@mui/material/TablePagination';
+import Snackbar from '@mui/material/Snackbar';
 
 import Content from '../content';
 import GitHubTable from '../github-table';
@@ -22,22 +23,32 @@ export const GitHubSearchPage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(ROWS_PER_PAGE_DEFAULT);
   const [currentPage, setCurrentPage] = useState(INITIAL_CURRENT_PAGE);
   const [totalCount, setTotalCount] = useState(INITIAL_TOTAL_COUNT);
+  const [isOpen, setIsOpen] = useState(false);
 
   const didMount = useRef(false);
   const searchByInput = useRef(null);
 
   const searchHandler = useCallback(async () => {
-    setIsSearching(true);
-    const res = await getRepos({
-      q: searchByInput.current.value,
-      rowsPerPage,
-      currentPage,
-    });
-    const data = await res.json();
-    setReposList(data.items);
-    setTotalCount(data.total_count);
-    setIsSearchApplied(true);
-    setIsSearching(false);
+    try {
+      setIsSearching(true);
+      const response = await getRepos({
+        q: searchByInput.current.value,
+        rowsPerPage,
+        currentPage,
+      });
+      if (!response.ok) {
+        throw response;
+      }
+      const data = await response.json();
+      setReposList(data.items);
+      setTotalCount(data.total_count);
+      setIsSearchApplied(true);
+      setIsSearching(false);
+    } catch (error) {
+      setIsOpen(true);
+    } finally {
+      setIsSearching(false);
+    }
   }, [rowsPerPage, currentPage]);
 
   const changeRowsPerPageHandler = (event) => {
@@ -99,6 +110,16 @@ export const GitHubSearchPage = () => {
           </>
         </Content>
       </Box>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        open={isOpen}
+        autoHideDuration={6000}
+        onClose={() => setIsOpen(false)}
+        message='Validation Failed'
+      />
     </Container>
   );
 };

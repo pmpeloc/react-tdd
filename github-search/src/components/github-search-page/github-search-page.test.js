@@ -13,6 +13,7 @@ import { setupServer } from 'msw/node';
 import GitHubSearchPage from './github-search-page';
 import {
   getReposListBy,
+  makeFakeError,
   makeFakeRepo,
   makeFakeResponse,
 } from '../../__fixtures__/repos';
@@ -209,8 +210,8 @@ describe('When the developer does a search and selects 50 rows per page', () => 
         ).not.toBeDisabled()
       );
       expect(screen.getAllByRole('row')).toHaveLength(51);
-    }, 10000);
-  }, 30000);
+    }, 30000);
+  }, 50000);
 });
 
 describe('When the developer clicks on search and then on next page button', () => {
@@ -275,4 +276,19 @@ describe('When the developer clicks on search and then on next page button and t
     // Expect
     expect(screen.getByRole('cell', { name: /1-0/ })).toBeInTheDocument();
   }, 30000);
+});
+
+describe('When there is an unexpected error from the backend', () => {
+  it('Must display an alert message error with the message from the service', async () => {
+    // Config sever return error
+    server.use(
+      rest.get('/search/repositories', (req, res, ctx) =>
+        res(ctx.status(422), ctx.json(makeFakeError()))
+      )
+    );
+    // Click search
+    fireClickSearch();
+    // Expect message
+    expect(await screen.findByText(/validation failed/i)).toBeVisible();
+  });
 });
