@@ -142,3 +142,22 @@ describe('When the user fills and blur the password input with a value without o
     expect(screen.getByText(passwordValidationMessage)).toBeInTheDocument();
   });
 });
+
+describe('When the user fills and blur the password input with a invalid value and then change with valid value and blur again', () => {
+  it('Must not display the validation message', () => {
+    const passwordWithoutSpecialChar = 'asdfghj9';
+    const validPassword = 'aA1asdasda#';
+    fireEvent.change(getPasswordInput(), {
+      target: { value: passwordWithoutSpecialChar },
+    });
+    fireEvent.blur(getPasswordInput());
+    expect(screen.getByText(passwordValidationMessage)).toBeInTheDocument();
+    fireEvent.change(getPasswordInput(), {
+      target: { value: validPassword },
+    });
+    fireEvent.blur(getPasswordInput());
+    expect(
+      screen.queryByText(passwordValidationMessage),
+    ).not.toBeInTheDocument();
+  });
+});
