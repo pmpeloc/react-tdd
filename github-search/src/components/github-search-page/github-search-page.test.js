@@ -278,8 +278,9 @@ describe('When the developer clicks on search and then on next page button and t
   }, 30000);
 });
 
-describe('When there is an unexpected error from the backend', () => {
+describe('When there is an unexpected error 422 from the backend', () => {
   it('Must display an alert message error with the message from the service', async () => {
+    expect(screen.queryByText(/validation failed/i)).not.toBeInTheDocument();
     // Config sever return error
     server.use(
       rest.get('/search/repositories', (req, res, ctx) =>
@@ -290,5 +291,21 @@ describe('When there is an unexpected error from the backend', () => {
     fireClickSearch();
     // Expect message
     expect(await screen.findByText(/validation failed/i)).toBeVisible();
+  });
+});
+
+describe('When there is an unexpected error 500 from the backend', () => {
+  it('Must display an alert message error with the message from the service', async () => {
+    expect(screen.queryByText(/unexpected error/i)).not.toBeInTheDocument();
+    server.use(
+      rest.get('/search/repositories', (req, res, ctx) =>
+        res(
+          ctx.status(500),
+          ctx.json(makeFakeError({ message: 'Unexpected Error' }))
+        )
+      )
+    );
+    fireClickSearch();
+    expect(await screen.findByText(/unexpected error/i)).toBeVisible();
   });
 });
