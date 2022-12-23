@@ -29,7 +29,7 @@ export const GitHubSearchPage = () => {
   const didMount = useRef(false);
   const searchByInput = useRef(null);
 
-  const searchHandler = useCallback(async () => {
+  const handleSearch = useCallback(async () => {
     try {
       setIsSearching(true);
       const response = await getRepos({
@@ -63,13 +63,21 @@ export const GitHubSearchPage = () => {
     setCurrentPage(newPage);
   };
 
+  const handleClickSearch = () => {
+    if (currentPage === INITIAL_CURRENT_PAGE) {
+      handleSearch();
+      return;
+    }
+    setCurrentPage(INITIAL_CURRENT_PAGE);
+  };
+
   useEffect(() => {
     if (!didMount.current) {
       didMount.current = true;
       return;
     }
-    searchHandler();
-  }, [searchHandler]);
+    handleSearch();
+  }, [handleSearch]);
 
   return (
     <Container>
@@ -93,7 +101,7 @@ export const GitHubSearchPage = () => {
             fullWidth
             color='primary'
             variant='contained'
-            onClick={searchHandler}>
+            onClick={handleClickSearch}>
             Search
           </Button>
         </Grid>
