@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
-import { Button, CircularProgress, Snackbar, TextField } from '@mui/material';
+import {
+  Avatar,
+  Button,
+  CircularProgress,
+  Container,
+  CssBaseline,
+  Snackbar,
+  TextField,
+  Typography,
+} from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+
 import { login } from '../../services';
 
 const validateEmail = email => {
@@ -84,41 +95,79 @@ export function LoginPage() {
   const handleClose = () => setIsOpen(false);
 
   return (
-    <>
-      <h1>Login Page</h1>
-      {isFetching && <CircularProgress data-testid="loading-indicator" />}
-      <form onSubmit={handleSubmit}>
-        <TextField
-          label="email"
-          id="email"
-          name="email"
-          helperText={emailValidationMessage}
-          onChange={handleChange}
-          value={formValues.email}
-          onBlur={handleBlurEmail}
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <div
+        style={{
+          marginTop: '8rem',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Avatar style={{ margin: '1rem', backgroundColor: 'red' }}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Login Page
+        </Typography>
+        {isFetching && <CircularProgress data-testid="loading-indicator" />}
+        <form
+          onSubmit={handleSubmit}
+          style={{ width: '100%', marginTop: '1rem' }}
+        >
+          <TextField
+            fullWidth
+            variant="outlined"
+            margin="normal"
+            required
+            label="email"
+            id="email"
+            name="email"
+            autoComplete="email"
+            autoFocus
+            helperText={emailValidationMessage}
+            onChange={handleChange}
+            value={formValues.email}
+            onBlur={handleBlurEmail}
+            error={emailValidationMessage}
+          />
+          <TextField
+            fullWidth
+            variant="outlined"
+            margin="normal"
+            required
+            label="password"
+            id="password"
+            type="password"
+            name="password"
+            autoComplete="current-password"
+            helperText={passwordValidationMessage}
+            onChange={handleChange}
+            value={formValues.password}
+            onBlur={handleBlurPassword}
+            error={passwordValidationMessage}
+          />
+          <Button
+            type="submit"
+            disabled={isFetching}
+            fullWidth
+            variant="contained"
+            color="primary"
+            style={{ margin: '3rem 0rem 2rem' }}
+          >
+            Send
+          </Button>
+        </form>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={isOpen}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          message={errorMessage}
         />
-        <TextField
-          label="password"
-          id="password"
-          type="password"
-          name="password"
-          helperText={passwordValidationMessage}
-          onChange={handleChange}
-          value={formValues.password}
-          onBlur={handleBlurPassword}
-        />
-        <Button type="submit" disabled={isFetching}>
-          Send
-        </Button>
-      </form>
-      <Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        open={isOpen}
-        autoHideDuration={6000}
-        onClose={handleClose}
-        message={errorMessage}
-      />
-    </>
+      </div>
+    </Container>
   );
 }
 

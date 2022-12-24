@@ -1,13 +1,9 @@
 import React from 'react';
 
-import './App.css';
+import { LoginPage } from './auth/components/login-page';
 
 function App() {
-  return (
-    <div className="App">
-      <h1>Hello</h1>
-    </div>
-  );
+  return <LoginPage />;
 }
 
 export default App;
