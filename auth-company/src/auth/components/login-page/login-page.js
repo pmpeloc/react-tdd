@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, CircularProgress, TextField } from '@mui/material';
+import { Button, CircularProgress, Snackbar, TextField } from '@mui/material';
 import { login } from '../../services';
 
 const validateEmail = email => {
@@ -18,6 +18,8 @@ const passValidationMessage =
 export function LoginPage() {
   const [emailValidationMessage, setEmailValidationMessage] = useState('');
   const [isFetching, setIsFetching] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [passwordValidationMessage, setPasswordValidationMessage] =
     useState('');
   const [formValues, setFormValues] = useState({
@@ -41,9 +43,20 @@ export function LoginPage() {
   const handleSubmit = async e => {
     e.preventDefault();
     if (validateForm()) return;
-    setIsFetching(true);
-    await login();
-    setIsFetching(false);
+    const { email, password } = formValues;
+    try {
+      setIsFetching(true);
+      const response = await login({ email, password });
+      if (!response.ok) {
+        throw response;
+      }
+    } catch (err) {
+      const data = await err.json();
+      setErrorMessage(data.message);
+      setIsOpen(true);
+    } finally {
+      setIsFetching(false);
+    }
   };
 
   const handleChange = ({ target: { value, name } }) => {
@@ -67,6 +80,8 @@ export function LoginPage() {
     }
     setPasswordValidationMessage('');
   };
+
+  const handleClose = () => setIsOpen(false);
 
   return (
     <>
@@ -96,6 +111,13 @@ export function LoginPage() {
           Send
         </Button>
       </form>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={isOpen}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message={errorMessage}
+      />
     </>
   );
 }

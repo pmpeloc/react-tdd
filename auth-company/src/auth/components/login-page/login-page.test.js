@@ -7,20 +7,27 @@ import {
   waitForElementToBeRemoved,
 } from '@testing-library/react';
 import { setupServer } from 'msw/node';
+import { rest } from 'msw';
 
 import { LoginPage } from './login-page';
 import { handlers } from '../../../mocks/handlers';
 
 const getPasswordInput = () => screen.getByLabelText(/password/i);
 const getSendButton = () => screen.getByRole('button', { name: /send/i });
-const fillInputsWithValidValues = () => {
+const fillInputs = ({
+  email = 'john.doe@test.com',
+  password = 'Aa123456789!@#',
+} = {}) => {
   fireEvent.change(screen.getByLabelText(/email/i), {
-    target: { value: 'john.doe@test.com' },
+    target: { value: email },
   });
   fireEvent.change(screen.getByLabelText(/password/i), {
-    target: { value: 'Aa123456789!@#' },
+    target: { value: password },
   });
 };
+const HTTP_UNEXPECTED_ERROR_STATUS = 500;
+const HTTP_INVALID_CREDENTIALS_STATUS = 401;
+const HTTP_OK_STATUS = 200;
 const passwordValidationMessage =
   'The password must contain at least 8 characters, one upper case letter, one number and one special character';
 
@@ -59,7 +66,7 @@ describe('When the user leaves empty fields and clicks the submit button', () =>
 
 describe('When the user fills the fields and clicks the submit button', () => {
   it('must not display the required messages', () => {
-    fillInputsWithValidValues();
+    fillInputs();
     fireEvent.click(getSendButton());
     expect(
       screen.queryByText(/The email is required/i),
@@ -185,7 +192,7 @@ describe('When the user fills and blur the password input with a invalid value a
 
 describe('When the user submit the login form with valid data', () => {
   it('Must disable the submit button while the form page is fetching the data', async () => {
-    fillInputsWithValidValues();
+    fillInputs();
     fireEvent.click(getSendButton());
     expect(getSendButton()).toBeDisabled();
     await waitFor(() => expect(getSendButton()).not.toBeDisabled());
@@ -193,11 +200,60 @@ describe('When the user submit the login form with valid data', () => {
 
   it('Must be a loading indicator at the top of the form while it is fetching', async () => {
     expect(screen.queryByTestId('loading-indicator')).not.toBeInTheDocument();
-    fillInputsWithValidValues();
+    fillInputs();
     fireEvent.click(getSendButton());
     expect(screen.getByTestId('loading-indicator')).toBeInTheDocument();
     await waitForElementToBeRemoved(() =>
       screen.queryByTestId('loading-indicator'),
     );
+  });
+});
+
+describe('When the user submit the login form with valid data and there ir an unexpected server error', () => {
+  it('Must display the error message "Unexpected error, please try again" from the api', async () => {
+    // Setup config the server
+    server.use(
+      rest.post('/login', (req, res, ctx) =>
+        res(
+          ctx.status(HTTP_UNEXPECTED_ERROR_STATUS),
+          ctx.json({ message: 'Unexpected error, please try again' }),
+        ),
+      ),
+    );
+    expect(
+      await screen.queryByText(/unexpected error, please try again/i),
+    ).not.toBeInTheDocument();
+    // Trigger submit form
+    fillInputs();
+    fireEvent.click(getSendButton());
+    // Expect display message error
+    expect(
+      await screen.findByText(/unexpected error, please try again/i),
+    ).toBeInTheDocument();
+  });
+});
+
+describe('When the user submit the login form with valid data and there is an invalid credentials error', () => {
+  it('Must display the error message "The email or password are not correct" from the api', async () => {
+    // Setup server
+    server.use(
+      rest.post('/login', (req, res, ctx) => {
+        const { email, password } = req.body;
+        if (email === 'wrong@mail.com' && password === 'Aa12345678$') {
+          return res(
+            ctx.status(HTTP_INVALID_CREDENTIALS_STATUS),
+            ctx.json({ message: 'The email or password are not correct' }),
+          );
+        }
+        return res(ctx.status(HTTP_OK_STATUS));
+      }),
+    );
+    // Trigger submit form
+    fillInputs({ email: 'wrong@mail.com', password: 'Aa12345678$' });
+    fireEvent.click(getSendButton());
+    // Expect error message
+    expect(
+      await screen.findByText(/the email or password are not correct/i),
+    ).toBeInTheDocument();
   });
 });
