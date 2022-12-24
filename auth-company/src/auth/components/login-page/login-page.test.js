@@ -13,6 +13,14 @@ import { handlers } from '../../../mocks/handlers';
 
 const getPasswordInput = () => screen.getByLabelText(/password/i);
 const getSendButton = () => screen.getByRole('button', { name: /send/i });
+const fillInputsWithValidValues = () => {
+  fireEvent.change(screen.getByLabelText(/email/i), {
+    target: { value: 'john.doe@test.com' },
+  });
+  fireEvent.change(screen.getByLabelText(/password/i), {
+    target: { value: 'Aa123456789!@#' },
+  });
+};
 const passwordValidationMessage =
   'The password must contain at least 8 characters, one upper case letter, one number and one special character';
 
@@ -51,8 +59,7 @@ describe('When the user leaves empty fields and clicks the submit button', () =>
 
 describe('When the user fills the fields and clicks the submit button', () => {
   it('must not display the required messages', () => {
-    screen.getByLabelText(/email/i).value = 'john.doe@test.com';
-    screen.getByLabelText(/password/i).value = 'Aa123456789!@#';
+    fillInputsWithValidValues();
     fireEvent.click(getSendButton());
     expect(
       screen.queryByText(/The email is required/i),
@@ -178,6 +185,7 @@ describe('When the user fills and blur the password input with a invalid value a
 
 describe('When the user submit the login form with valid data', () => {
   it('Must disable the submit button while the form page is fetching the data', async () => {
+    fillInputsWithValidValues();
     fireEvent.click(getSendButton());
     expect(getSendButton()).toBeDisabled();
     await waitFor(() => expect(getSendButton()).not.toBeDisabled());
@@ -185,6 +193,7 @@ describe('When the user submit the login form with valid data', () => {
 
   it('Must be a loading indicator at the top of the form while it is fetching', async () => {
     expect(screen.queryByTestId('loading-indicator')).not.toBeInTheDocument();
+    fillInputsWithValidValues();
     fireEvent.click(getSendButton());
     expect(screen.getByTestId('loading-indicator')).toBeInTheDocument();
     await waitForElementToBeRemoved(() =>
