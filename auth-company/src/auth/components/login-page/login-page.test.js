@@ -1,5 +1,11 @@
 import React from 'react';
-import { screen, render, fireEvent, waitFor } from '@testing-library/react';
+import {
+  screen,
+  render,
+  fireEvent,
+  waitFor,
+  waitForElementToBeRemoved,
+} from '@testing-library/react';
 import { setupServer } from 'msw/node';
 
 import { LoginPage } from './login-page';
@@ -177,7 +183,12 @@ describe('When the user submit the login form with valid data', () => {
     await waitFor(() => expect(getSendButton()).not.toBeDisabled());
   });
 
-  it.todo(
-    'Must be a loading indicator at the top of the form while it is fetching',
-  );
+  it('Must be a loading indicator at the top of the form while it is fetching', async () => {
+    expect(screen.queryByTestId('loading-indicator')).not.toBeInTheDocument();
+    fireEvent.click(getSendButton());
+    expect(screen.getByTestId('loading-indicator')).toBeInTheDocument();
+    await waitForElementToBeRemoved(() =>
+      screen.queryByTestId('loading-indicator'),
+    );
+  });
 });
