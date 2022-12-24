@@ -130,7 +130,7 @@ export function LoginPage() {
             onChange={handleChange}
             value={formValues.email}
             onBlur={handleBlurEmail}
-            error={emailValidationMessage}
+            error={!!emailValidationMessage}
           />
           <TextField
             fullWidth
@@ -146,7 +146,7 @@ export function LoginPage() {
             onChange={handleChange}
             value={formValues.password}
             onBlur={handleBlurPassword}
-            error={passwordValidationMessage}
+            error={!!passwordValidationMessage}
           />
           <Button
             type="submit"
