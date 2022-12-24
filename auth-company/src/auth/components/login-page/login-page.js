@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button, CircularProgress, TextField } from '@mui/material';
+import { login } from '../../services';
 
 const validateEmail = email => {
   const regex = /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/;
@@ -24,8 +25,7 @@ export function LoginPage() {
     password: '',
   });
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const validateForm = () => {
     const { email, password } = formValues;
     const isEmailEmpty = !email;
     const isPasswordEmpty = !password;
@@ -35,9 +35,14 @@ export function LoginPage() {
     if (isPasswordEmpty) {
       setPasswordValidationMessage('The password is required');
     }
-    if (isEmailEmpty || isPasswordEmpty) return;
+    return isEmailEmpty || isPasswordEmpty;
+  };
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    if (validateForm()) return;
     setIsFetching(true);
-    await fetch('/login', { method: 'POST' });
+    await login();
     setIsFetching(false);
   };
 
