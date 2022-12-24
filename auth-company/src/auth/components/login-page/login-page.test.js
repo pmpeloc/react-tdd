@@ -10,7 +10,8 @@ import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 
 import { LoginPage } from './login-page';
-import { handlers } from '../../../mocks/handlers';
+import { handlerInvalidCredentials, handlers } from '../../../mocks/handlers';
+import { HTTP_UNEXPECTED_ERROR_STATUS } from '../../../consts';
 
 const getPasswordInput = () => screen.getByLabelText(/password/i);
 const getSendButton = () => screen.getByRole('button', { name: /send/i });
@@ -25,9 +26,7 @@ const fillInputs = ({
     target: { value: password },
   });
 };
-const HTTP_UNEXPECTED_ERROR_STATUS = 500;
-const HTTP_INVALID_CREDENTIALS_STATUS = 401;
-const HTTP_OK_STATUS = 200;
+
 const passwordValidationMessage =
   'The password must contain at least 8 characters, one upper case letter, one number and one special character';
 
@@ -235,21 +234,15 @@ describe('When the user submit the login form with valid data and there ir an un
 
 describe('When the user submit the login form with valid data and there is an invalid credentials error', () => {
   it('Must display the error message "The email or password are not correct" from the api', async () => {
+    const wrongEmail = 'wrong@mail.com';
+    const wrongPassword = 'Aa12345678$';
     // Setup server
-    server.use(
-      rest.post('/login', (req, res, ctx) => {
-        const { email, password } = req.body;
-        if (email === 'wrong@mail.com' && password === 'Aa12345678$') {
-          return res(
-            ctx.status(HTTP_INVALID_CREDENTIALS_STATUS),
-            ctx.json({ message: 'The email or password are not correct' }),
-          );
-        }
-        return res(ctx.status(HTTP_OK_STATUS));
-      }),
-    );
+    server.use(handlerInvalidCredentials({ wrongEmail, wrongPassword }));
     // Trigger submit form
-    fillInputs({ email: 'wrong@mail.com', password: 'Aa12345678$' });
+    expect(
+      screen.queryByText(/the email or password are not correct/i),
+    ).not.toBeInTheDocument();
+    fillInputs({ email: wrongEmail, password: wrongPassword });
     fireEvent.click(getSendButton());
     // Expect error message
     expect(
