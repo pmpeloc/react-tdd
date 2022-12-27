@@ -35,7 +35,6 @@ export function LoginPage() {
   const [isFetching, setIsFetching] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [user, setUser] = useState({ role: '' });
   const [passwordValidationMessage, setPasswordValidationMessage] =
     useState('');
   const [formValues, setFormValues] = useState({
@@ -43,7 +42,7 @@ export function LoginPage() {
     password: '',
   });
 
-  const { handleSuccessLogin } = useContext(AuthContext);
+  const { handleSuccessLogin, user } = useContext(AuthContext);
 
   const validateForm = () => {
     const { email, password } = formValues;
@@ -71,8 +70,7 @@ export function LoginPage() {
       const {
         user: { role },
       } = await response.json();
-      setUser({ role });
-      handleSuccessLogin();
+      handleSuccessLogin({ role });
     } catch (err) {
       const data = await err.json();
       setErrorMessage(data.message);
