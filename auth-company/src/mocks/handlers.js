@@ -14,7 +14,10 @@ export const handlers = [
     if (email === 'admin@mail.com') {
       role = ADMIN_ROLE_VALUE;
     }
-    return res(ctx.status(200), ctx.json({ user: { role } }));
+    return res(
+      ctx.status(200),
+      ctx.json({ user: { role, username: 'John Doe' } }),
+    );
   }),
 ];
 
