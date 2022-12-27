@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Avatar,
   Button,
@@ -11,10 +11,11 @@ import {
   Typography,
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { Navigate } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 import { login } from '../../services';
 import { ADMIN_ROLE_VALUE } from '../../../consts';
+import { AuthContext } from '../../../utils/contexts/auth-context';
 
 const validateEmail = email => {
   const regex = /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/;
@@ -41,6 +42,8 @@ export function LoginPage() {
     email: '',
     password: '',
   });
+
+  const { handleSuccessLogin } = useContext(AuthContext);
 
   const validateForm = () => {
     const { email, password } = formValues;
@@ -69,6 +72,7 @@ export function LoginPage() {
         user: { role },
       } = await response.json();
       setUser({ role });
+      handleSuccessLogin();
     } catch (err) {
       const data = await err.json();
       setErrorMessage(data.message);
@@ -103,7 +107,7 @@ export function LoginPage() {
   const handleClose = () => setIsOpen(false);
 
   if (!isFetching && user.role === ADMIN_ROLE_VALUE) {
-    return <Navigate replace to="/admin" />;
+    return <Redirect to="/admin" />;
   }
 
   return (

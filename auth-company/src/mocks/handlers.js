@@ -10,7 +10,7 @@ export const handlers = [
   rest.post('/login', (req, res, ctx) => {
     sessionStorage.setItem('is-authenticated', true);
     let role = '';
-    const { email } = req.json();
+    const { email } = req.body;
     if (email === 'admin@mail.com') {
       role = ADMIN_ROLE_VALUE;
     }

@@ -11,28 +11,27 @@ import { rest } from 'msw';
 import { LoginPage } from './login-page';
 import { handlerInvalidCredentials, handlers } from '../../../mocks/handlers';
 import { HTTP_UNEXPECTED_ERROR_STATUS } from '../../../consts';
-import { renderWithRouter } from '../../../utils/tests';
+import {
+  fillInputs,
+  getSendButton,
+  renderWithRouter,
+} from '../../../utils/tests';
+import { AuthContext } from '../../../utils/contexts/auth-context';
 
 const getPasswordInput = () => screen.getByLabelText(/password/i);
-const getSendButton = () => screen.getByRole('button', { name: /send/i });
-const fillInputs = ({
-  email = 'john.doe@test.com',
-  password = 'Aa123456789!@#',
-} = {}) => {
-  fireEvent.change(screen.getByLabelText(/email/i), {
-    target: { value: email },
-  });
-  fireEvent.change(screen.getByLabelText(/password/i), {
-    target: { value: password },
-  });
-};
 
 const passwordValidationMessage =
   'The password must contain at least 8 characters, one upper case letter, one number and one special character';
 
 const server = setupServer(...handlers);
 
-beforeEach(() => renderWithRouter(<LoginPage />));
+beforeEach(() =>
+  renderWithRouter(
+    <AuthContext.Provider value={{ handleSuccessLogin: jest.fn() }}>
+      <LoginPage />
+    </AuthContext.Provider>,
+  ),
+);
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
