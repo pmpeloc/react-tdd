@@ -54,3 +54,12 @@ describe('When the admin is authenticated in login page', () => {
     expect(await screen.findByText(/john doe/i)).toBeInTheDocument();
   });
 });
+
+describe('When the admin goes to employees page', () => {
+  it('Must have access', () => {
+    goTo('/admin');
+    renderWithAuthProvider(<AppRouter />, { isAuth: true });
+    fireEvent.click(screen.getByText(/employee/i));
+    expect(screen.getByText(/employee page/i)).toBeInTheDocument();
+  });
+});
