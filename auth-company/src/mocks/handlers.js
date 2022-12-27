@@ -1,11 +1,20 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { rest } from 'msw';
-import { HTTP_INVALID_CREDENTIALS_STATUS, HTTP_OK_STATUS } from '../consts';
+import {
+  ADMIN_ROLE_VALUE,
+  HTTP_INVALID_CREDENTIALS_STATUS,
+  HTTP_OK_STATUS,
+} from '../consts';
 
 export const handlers = [
   rest.post('/login', (req, res, ctx) => {
     sessionStorage.setItem('is-authenticated', true);
-    return res(ctx.status(200));
+    let role = '';
+    const { email } = req.json();
+    if (email === 'admin@mail.com') {
+      role = ADMIN_ROLE_VALUE;
+    }
+    return res(ctx.status(200), ctx.json({ user: { role } }));
   }),
 ];
 

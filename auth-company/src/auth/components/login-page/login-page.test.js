@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   screen,
-  render,
   fireEvent,
   waitFor,
   waitForElementToBeRemoved,
@@ -12,6 +11,7 @@ import { rest } from 'msw';
 import { LoginPage } from './login-page';
 import { handlerInvalidCredentials, handlers } from '../../../mocks/handlers';
 import { HTTP_UNEXPECTED_ERROR_STATUS } from '../../../consts';
+import { renderWithRouter } from '../../../utils/tests';
 
 const getPasswordInput = () => screen.getByLabelText(/password/i);
 const getSendButton = () => screen.getByRole('button', { name: /send/i });
@@ -32,7 +32,7 @@ const passwordValidationMessage =
 
 const server = setupServer(...handlers);
 
-beforeEach(() => render(<LoginPage />));
+beforeEach(() => renderWithRouter(<LoginPage />));
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
@@ -64,7 +64,7 @@ describe('When the user leaves empty fields and clicks the submit button', () =>
 });
 
 describe('When the user fills the fields and clicks the submit button', () => {
-  it('must not display the required messages', () => {
+  it('must not display the required messages', async () => {
     fillInputs();
     fireEvent.click(getSendButton());
     expect(
@@ -73,6 +73,7 @@ describe('When the user fills the fields and clicks the submit button', () => {
     expect(
       screen.queryByText(/The password is required/i),
     ).not.toBeInTheDocument();
+    await waitFor(() => expect(getSendButton()).not.toBeDisabled());
   });
 });
 
