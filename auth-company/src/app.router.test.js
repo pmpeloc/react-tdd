@@ -10,6 +10,7 @@ import {
   renderWithAuthProvider,
 } from './utils/tests';
 import { handlers } from './mocks/handlers';
+import { ADMIN_EMAIL, EMPLOYEE_EMAIL } from './consts';
 
 const server = setupServer(...handlers);
 
@@ -46,7 +47,7 @@ describe('When the admin is authenticated in login page', () => {
     // Go to login page
     renderWithAuthProvider(<AppRouter />);
     // Fill form as admin
-    fillInputs({ email: 'admin@mail.com' });
+    fillInputs({ email: ADMIN_EMAIL });
     // Submit form
     fireEvent.click(getSendButton());
     // Expect admin page
@@ -69,7 +70,7 @@ describe('When the employee is authenticated in login page', () => {
     // Go to login page
     renderWithAuthProvider(<AppRouter />);
     // Fill form as admin
-    fillInputs({ email: 'employee@mail.com' });
+    fillInputs({ email: EMPLOYEE_EMAIL });
     // Submit form
     fireEvent.click(getSendButton());
     // Expect admin page

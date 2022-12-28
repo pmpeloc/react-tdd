@@ -1,7 +1,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { rest } from 'msw';
 import {
+  ADMIN_EMAIL,
   ADMIN_ROLE,
+  EMPLOYEE_EMAIL,
   EMPLOYEE_ROLE,
   HTTP_INVALID_CREDENTIALS_STATUS,
   HTTP_OK_STATUS,
@@ -12,10 +14,10 @@ export const handlers = [
     sessionStorage.setItem('is-authenticated', true);
     let role = '';
     const { email } = req.body;
-    if (email === 'admin@mail.com') {
+    if (email === ADMIN_EMAIL) {
       role = ADMIN_ROLE;
     }
-    if (email === 'employee@mail.com') {
+    if (email === EMPLOYEE_EMAIL) {
       role = EMPLOYEE_ROLE;
     }
     return res(
