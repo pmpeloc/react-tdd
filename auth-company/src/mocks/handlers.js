@@ -2,6 +2,7 @@
 import { rest } from 'msw';
 import {
   ADMIN_ROLE,
+  EMPLOYEE_ROLE,
   HTTP_INVALID_CREDENTIALS_STATUS,
   HTTP_OK_STATUS,
 } from '../consts';
@@ -13,6 +14,9 @@ export const handlers = [
     const { email } = req.body;
     if (email === 'admin@mail.com') {
       role = ADMIN_ROLE;
+    }
+    if (email === 'employee@mail.com') {
+      role = EMPLOYEE_ROLE;
     }
     return res(
       ctx.status(200),

@@ -63,3 +63,16 @@ describe('When the admin goes to employees page', () => {
     expect(screen.getByText(/^employee page/i)).toBeInTheDocument();
   });
 });
+
+describe('When the employee is authenticated in login page', () => {
+  it('Must be redirected to employee page', async () => {
+    // Go to login page
+    renderWithAuthProvider(<AppRouter />);
+    // Fill form as admin
+    fillInputs({ email: 'employee@mail.com' });
+    // Submit form
+    fireEvent.click(getSendButton());
+    // Expect admin page
+    expect(await screen.findByText(/employee page/i)).toBeInTheDocument();
+  });
+});

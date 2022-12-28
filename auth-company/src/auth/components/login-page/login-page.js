@@ -14,7 +14,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Redirect } from 'react-router-dom';
 
 import { login } from '../../services';
-import { ADMIN_ROLE } from '../../../consts';
+import { ADMIN_ROLE, EMPLOYEE_ROLE } from '../../../consts';
 import { AuthContext } from '../../../utils/contexts/auth-context';
 
 const validateEmail = email => {
@@ -106,6 +106,10 @@ export function LoginPage() {
 
   if (!isFetching && user.role === ADMIN_ROLE) {
     return <Redirect to="/admin" />;
+  }
+
+  if (!isFetching && user.role === EMPLOYEE_ROLE) {
+    return <Redirect to="/employee" />;
   }
 
   return (
