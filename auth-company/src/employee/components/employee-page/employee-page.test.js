@@ -1,5 +1,7 @@
 import React from 'react';
 import { screen, render } from '@testing-library/react';
+import { BrowserRouter as Router } from 'react-router-dom';
+
 import { EmployeePage } from './employee-page';
 import { AuthContext } from '../../../utils/contexts/auth-context';
 import { ADMIN_ROLE, EMPLOYEE_ROLE } from '../../../consts';
@@ -9,6 +11,7 @@ const renderWith = ({ role, username = 'John Doe' }) => {
     <AuthContext.Provider value={{ user: { username, role } }}>
       <EmployeePage />
     </AuthContext.Provider>,
+    { wrapper: Router },
   );
 };
 

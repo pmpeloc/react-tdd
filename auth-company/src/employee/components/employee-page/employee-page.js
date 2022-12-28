@@ -4,18 +4,20 @@ import { Button, Typography } from '@mui/material';
 
 import { AuthContext } from '../../../utils/contexts/auth-context';
 import { ADMIN_ROLE } from '../../../consts';
+import { AppLayout } from '../../../utils/components/app-layout';
 
 export const EmployeePage = () => {
   const { user } = useContext(AuthContext);
 
   return (
-    <>
-      <Typography component="h1" variant="h5">
-        Employee Page
-      </Typography>
-      {user.role === ADMIN_ROLE && <Button type="button">Delete</Button>}
-      <p>{user.username}</p>
-    </>
+    <AppLayout user={user}>
+      <>
+        <Typography component="h1" variant="h5">
+          Employee Page
+        </Typography>
+        {user.role === ADMIN_ROLE && <Button type="button">Delete</Button>}
+      </>
+    </AppLayout>
   );
 };
 
