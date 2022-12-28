@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { rest } from 'msw';
 import {
-  ADMIN_ROLE_VALUE,
+  ADMIN_ROLE,
   HTTP_INVALID_CREDENTIALS_STATUS,
   HTTP_OK_STATUS,
 } from '../consts';
@@ -12,7 +12,7 @@ export const handlers = [
     let role = '';
     const { email } = req.body;
     if (email === 'admin@mail.com') {
-      role = ADMIN_ROLE_VALUE;
+      role = ADMIN_ROLE;
     }
     return res(
       ctx.status(200),

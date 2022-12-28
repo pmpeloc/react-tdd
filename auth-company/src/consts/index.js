@@ -2,11 +2,13 @@ export const HTTP_UNEXPECTED_ERROR_STATUS = 500;
 export const HTTP_INVALID_CREDENTIALS_STATUS = 401;
 export const HTTP_OK_STATUS = 200;
 
-export const ADMIN_ROLE_VALUE = 'admin';
+export const ADMIN_ROLE = 'admin';
+export const EMPLOYEE_ROLE = 'employee';
 
 export default {
   HTTP_UNEXPECTED_ERROR_STATUS,
   HTTP_INVALID_CREDENTIALS_STATUS,
   HTTP_OK_STATUS,
-  ADMIN_ROLE_VALUE,
+  ADMIN_ROLE,
+  EMPLOYEE_ROLE,
 };
