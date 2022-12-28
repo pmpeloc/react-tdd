@@ -10,7 +10,12 @@ import {
   renderWithAuthProvider,
 } from './utils/tests';
 import { handlers } from './mocks/handlers';
-import { ADMIN_EMAIL, EMPLOYEE_EMAIL } from './consts';
+import {
+  ADMIN_EMAIL,
+  ADMIN_ROLE,
+  EMPLOYEE_EMAIL,
+  EMPLOYEE_ROLE,
+} from './consts';
 
 const server = setupServer(...handlers);
 
@@ -37,7 +42,7 @@ describe('When the user is not authenticated and enters on employee page', () =>
 describe('When the user is authenticated and enters on admin page', () => {
   it('Must not be redirect to login page', () => {
     goTo('/admin');
-    renderWithAuthProvider(<AppRouter />, { isAuth: true });
+    renderWithAuthProvider(<AppRouter />, { isAuth: true, role: ADMIN_ROLE });
     expect(screen.getByText(/admin page/i)).toBeInTheDocument();
   });
 });
@@ -59,7 +64,7 @@ describe('When the admin is authenticated in login page', () => {
 describe('When the admin goes to employees page', () => {
   it('Must have access', () => {
     goTo('/admin');
-    renderWithAuthProvider(<AppRouter />, { isAuth: true });
+    renderWithAuthProvider(<AppRouter />, { isAuth: true, role: ADMIN_ROLE });
     fireEvent.click(screen.getByText(/employee/i));
     expect(screen.getByText(/^employee page/i)).toBeInTheDocument();
   });
@@ -69,11 +74,22 @@ describe('When the employee is authenticated in login page', () => {
   it('Must be redirected to employee page', async () => {
     // Go to login page
     renderWithAuthProvider(<AppRouter />);
-    // Fill form as admin
+    // Fill form as employee
     fillInputs({ email: EMPLOYEE_EMAIL });
     // Submit form
     fireEvent.click(getSendButton());
     // Expect admin page
     expect(await screen.findByText(/employee page/i)).toBeInTheDocument();
+  });
+});
+
+describe('When the employee goes to admin page', () => {
+  it('Must redirect to employee page', () => {
+    goTo('/admin');
+    renderWithAuthProvider(<AppRouter />, {
+      isAuth: true,
+      role: EMPLOYEE_ROLE,
+    });
+    expect(screen.getByText(/employee page/i)).toBeInTheDocument();
   });
 });

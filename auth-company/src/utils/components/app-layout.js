@@ -2,12 +2,12 @@
 /* eslint-disable react/function-component-definition */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { AppBar, Button, Toolbar, Typography } from '@mui/material';
+import { AppBar, Button, Container, Toolbar, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 export const AppLayout = ({ user, children }) => {
   return (
-    <>
+    <Container>
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6">{user.username}</Typography>
@@ -17,7 +17,7 @@ export const AppLayout = ({ user, children }) => {
         </Toolbar>
       </AppBar>
       {children}
-    </>
+    </Container>
   );
 };
 
