@@ -26,4 +26,9 @@ describe('When the employee access to employee page', () => {
       screen.queryByRole('button', { name: /delete/i }),
     ).not.toBeInTheDocument();
   });
+
+  it('The employee username should be displayed on the common navbar', () => {
+    renderWith({ role: EMPLOYEE_ROLE, username: 'Jane Doe' });
+    expect(screen.getByText(/jane doe/i)).toBeInTheDocument();
+  });
 });

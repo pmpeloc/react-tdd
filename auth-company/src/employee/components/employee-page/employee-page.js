@@ -14,6 +14,7 @@ export const EmployeePage = () => {
         Employee Page
       </Typography>
       {user.role === ADMIN_ROLE && <Button type="button">Delete</Button>}
+      <p>{user.username}</p>
     </>
   );
 };
